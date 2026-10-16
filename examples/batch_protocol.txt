@@ -1,0 +1,14 @@
+ILLUSTRATIVE SOFTWARE INPUT — NOT AN EXPERIMENTAL RECORD
+
+Transformation: Knoevenagel condensation of benzaldehyde with malononitrile.
+
+Batch protocol: Benzaldehyde (1.0 mmol), malononitrile (1.0 mmol), and
+piperidine (0.10 mmol) were combined in ethanol (10 mL). The mixture was
+stirred at 25 degrees C for 60 minutes under ambient atmosphere.
+
+Intended product: benzylidenemalononitrile.
+Yield, conversion, selectivity, solubility and kinetic measurements: unknown.
+
+Design objective: propose an initial continuous-flow screening experiment
+using the supplied inventory. Keep unmeasured performance and uncertain
+assumptions explicit. Do not infer a measured yield from this example.

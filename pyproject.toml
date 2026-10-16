@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flowpilot"
+version = "2.0.0"
+description = "Inventory-constrained batch-to-flow process design"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "pydantic>=2.10,<3",
+  "openai>=1.50",
+  "anthropic>=0.40",
+  "httpx>=0.27",
+  "chromadb>=0.5",
+  "numpy>=1.24",
+  "scipy>=1.10",
+  "filelock>=3.16",
+  "graphviz>=0.20",
+  "cairosvg>=2.7",
+  "Pillow>=10.0",
+  "PyMuPDF>=1.24",
+  "openpyxl>=3.1",
+  "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+web = ["fastapi>=0.115,<1", "uvicorn[standard]>=0.30,<1", "python-multipart>=0.0.9"]
+legacy-ui = ["streamlit>=1.40", "pandas>=2.0", "plotly>=5.0", "scikit-learn>=1.3", "pyalex>=0.15"]
+desktop = ["fastapi>=0.115,<1", "uvicorn[standard]>=0.30,<1", "python-multipart>=0.0.9", "pywebview>=5.3"]
+dev = ["pytest>=8", "build>=1.2"]
+
+[project.scripts]
+flowpilot = "flowpilot.cli:main"
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["flowpilot", "flowpilot.*", "flowpilot_translate", "flowpilot_translate.*", "flowpilot_design", "flowpilot_design.*", "flowpilot_fundamentals", "flowpilot_fundamentals.*", "flowpilot_optimize", "flowpilot_optimize.*", "flowpilot_prism", "flowpilot_prism.*", "flowpilot_scout", "flowpilot_scout.*", "flowpilot_webapp", "flowpilot_webapp.*", "components", "components.*", "pages", "pages.*"]
+exclude = ["*.tests", "*.tests.*"]
+namespaces = false
+
+[tool.setuptools.package-data]
+flowpilot_translate = ["prompts/*.txt", "data/lab_inventory.json"]
+flowpilot_design = ["prompts/*.txt"]
+"flowpilot_design.visualizer" = ["icons/*.png", "icons/*.svg"]
+flowpilot_webapp = ["frontend/dist/*", "frontend/dist/assets/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "flowpilot/tests", "flowpilot_translate/tests", "flowpilot_design/tests", "flowpilot_webapp/tests"]

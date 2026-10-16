@@ -1,0 +1,108 @@
+name: Tests and packages
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  ANONYMIZED_TELEMETRY: "False"
+  OPENAI_API_KEY: ""
+  ANTHROPIC_API_KEY: ""
+
+jobs:
+  python:
+    name: Python ${{ matrix.python }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure isolated state
+        run: echo "FLOWPILOT_HOME=$RUNNER_TEMP/flowpilot-ci" >> "$GITHUB_ENV"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.12.0"
+          cache: npm
+          cache-dependency-path: flowpilot_webapp/frontend/package-lock.json
+      - name: Install rendering libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes graphviz libcairo2
+      - name: Install application and test dependencies
+        run: python -m pip install -e '.[web,legacy-ui,dev]'
+      - name: Build frontend
+        run: |
+          npm --prefix flowpilot_webapp/frontend ci
+          npm --prefix flowpilot_webapp/frontend run build
+      - name: Run offline tests
+        run: python -m pytest -q
+      - name: Build wheel and source distribution
+        run: python -m build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: flowpilot-python-${{ matrix.python }}
+          path: dist/*
+          if-no-files-found: error
+
+  browser:
+    name: Desktop and mobile browser tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure isolated state
+        run: echo "FLOWPILOT_HOME=$RUNNER_TEMP/flowpilot-ci" >> "$GITHUB_ENV"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.12.0"
+          cache: npm
+          cache-dependency-path: flowpilot_webapp/frontend/package-lock.json
+      - name: Install rendering libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes graphviz libcairo2
+      - name: Install application and browser dependencies
+        run: |
+          python -m pip install -e '.[web]'
+          npm --prefix flowpilot_webapp/frontend ci
+          npm --prefix flowpilot_webapp/frontend exec -- playwright install --with-deps chromium
+          npm --prefix flowpilot_webapp/frontend run build
+      - name: Run browser tests against isolated local state
+        env:
+          FLOWPILOT_TEST_URL: http://127.0.0.1:8510
+        run: |
+          python -m uvicorn flowpilot_webapp.backend.app:app --host 127.0.0.1 --port 8510 > "$RUNNER_TEMP/flowpilot-server.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          python - <<'PY'
+          import time
+          import urllib.request
+          for attempt in range(60):
+              try:
+                  with urllib.request.urlopen("http://127.0.0.1:8510/api/runtime", timeout=1):
+                      break
+              except OSError:
+                  time.sleep(1)
+          else:
+              raise SystemExit("FlowPilot test server did not become ready")
+          PY
+          npm --prefix flowpilot_webapp/frontend run test:e2e -- --workers=2
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: browser-failure-diagnostics
+          path: |
+            flowpilot_webapp/frontend/test-results/
+            ${{ runner.temp }}/flowpilot-server.log
+          if-no-files-found: ignore

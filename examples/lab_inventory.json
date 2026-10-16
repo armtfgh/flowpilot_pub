@@ -1,0 +1,70 @@
+{
+  "strict_assignment": false,
+  "pumps": [
+    {
+      "name": "Example liquid pump A",
+      "type": "syringe",
+      "max_pressure_bar": 10.0,
+      "min_flow_rate_mL_min": 0.01,
+      "max_flow_rate_mL_min": 2.0
+    },
+    {
+      "name": "Example liquid pump B",
+      "type": "syringe",
+      "max_pressure_bar": 10.0,
+      "min_flow_rate_mL_min": 0.01,
+      "max_flow_rate_mL_min": 2.0
+    }
+  ],
+  "tubing": [
+    {
+      "name": "Example PFA tubing",
+      "material": "PFA",
+      "ID_mm": 1.0,
+      "max_pressure_bar": 10.0,
+      "max_temperature_C": 80.0,
+      "transparent": true
+    }
+  ],
+  "reactors": [
+    {
+      "name": "Example 5 mL coil",
+      "type": "coil",
+      "material": "PFA",
+      "volume_mL": 5.0,
+      "ID_mm": 1.0,
+      "min_temperature_C": 20.0,
+      "max_temperature_C": 80.0,
+      "max_pressure_bar": 10.0
+    }
+  ],
+  "mixers": [
+    {
+      "name": "Example two-inlet mixer",
+      "type": "T-mixer",
+      "material": "PFA",
+      "max_inputs": 2,
+      "max_pressure_bar": 10.0,
+      "supported_ID_mm": [1.0]
+    }
+  ],
+  "BPR_available": [2.0, 5.0],
+  "pressure_controllers": [
+    {
+      "name": "Example back-pressure regulator",
+      "type": "BPR",
+      "setpoints_bar": [2.0, 5.0],
+      "max_pressure_bar": 10.0
+    }
+  ],
+  "temperature_controllers": [
+    {
+      "name": "Example temperature-controlled bath",
+      "type": "heater_chiller",
+      "min_temperature_C": 20.0,
+      "max_temperature_C": 80.0
+    }
+  ],
+  "light_sources": [],
+  "gas_hardware": []
+}

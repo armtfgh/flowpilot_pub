@@ -1,0 +1,40 @@
+cff-version: 1.2.0
+message: >-
+  If you use FlowPilot in research, please cite the accompanying manuscript.
+  The manuscript is unpublished; no publication DOI is assigned here.
+type: software
+title: "FlowPilot: multi-agent batch-to-flow process design"
+authors: &authors
+  - family-names: Mottafegh
+    given-names: Amirreza
+  - family-names: Park
+    given-names: Mincheol
+  - family-names: Jo
+    given-names: Jun-young
+  - family-names: Myung
+    given-names: Jin Suk
+  - family-names: Park
+    given-names: Boyoung Y.
+  - family-names: Ahn
+    given-names: Gwang-Noh
+repository-code: "https://github.com/armtfgh/flowpilot"
+abstract: >-
+  FlowPilot combines chemical planning, literature retrieval, deterministic
+  engineering calculations and specialist-agent review to propose continuous-flow
+  screening designs from batch protocols and laboratory constraints.
+keywords:
+  - flow chemistry
+  - batch-to-flow
+  - multi-agent systems
+  - process design
+  - retrieval-augmented generation
+preferred-citation:
+  type: unpublished
+  title: >-
+    Agentic design of continuous flow processes with chemical knowledge and
+    laboratory constraints
+  authors: *authors
+  year: 2026
+  notes: >-
+    Unpublished manuscript. Amirreza Mottafegh and Mincheol Park contributed
+    equally to this work.
