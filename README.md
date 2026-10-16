@@ -66,7 +66,7 @@ flowpilot translate --file examples/batch_protocol.txt \
   --output result.json
 ```
 
-The [example inputs](examples/README.md) illustrate the expected format and do not report experimental outcomes. Software tests use synthetic or anonymized computational inputs; historical benchmark campaigns and laboratory datasets are not included. Use `flowpilot --help` and each subcommand's `--help` for available options.
+The [example inputs](examples/README.md) illustrate the expected format and do not report experimental outcomes. Software tests use purpose-built inputs; historical benchmark campaigns, laboratory datasets and saved research designs are not included. Use `flowpilot --help` and each subcommand's `--help` for available options.
 
 ## Explore the project
 

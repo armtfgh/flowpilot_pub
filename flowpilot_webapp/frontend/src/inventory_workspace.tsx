@@ -6,7 +6,7 @@ type Profile = Json & { profile_id: string; name: string; lab_inventory: Json };
 type Category = { key: string; label: string; schema: Json };
 type Metadata = { categories: Category[]; inventory_schema: Json; empty_profile: Profile };
 type Api = <T>(url: string, init?: RequestInit) => Promise<T>;
-const STORAGE = "flowpilot_inventory_editor_v1";
+const STORAGE = "flowpilot_publication_inventory_editor_v1";
 const clone = <T,>(value: T): T => structuredClone(value);
 const newProfileId = () => `manual_${Array.from(crypto.getRandomValues(new Uint8Array(12)), n => n.toString(16).padStart(2, "0")).join("")}`;
 const human = (key: string) => key.replaceAll("_", " ").replace(/^./, c => c.toUpperCase());
@@ -108,6 +108,7 @@ function ObjectEditor({ label, value, commit, pending }: { label: string; value:
 }
 
 function restore() {
+  if (new URLSearchParams(window.location.search).get("demo") === "1") return {};
   try { return JSON.parse(sessionStorage.getItem(STORAGE) || "{}"); } catch { return {}; }
 }
 
@@ -136,7 +137,7 @@ export function InventoryWorkspace({ profiles, refresh, onUse, api }: { profiles
     initialized.current = true;
     api<Metadata>("/api/inventory/editor-schema").then(m => { setMetadata(m); setDraft(current => current || { ...m.empty_profile, profile_id: newProfileId() }); }).catch(e => setError(e.message));
   }, []);
-  useEffect(() => { try { sessionStorage.setItem(STORAGE, JSON.stringify({ draft, tab, category: categoryKey, jsonText, rawDirty })); } catch { /* Browser storage is optional; export remains available. */ } }, [draft, tab, categoryKey, jsonText, rawDirty]);
+  useEffect(() => { if (new URLSearchParams(window.location.search).get("demo") === "1") return; try { sessionStorage.setItem(STORAGE, JSON.stringify({ draft, tab, category: categoryKey, jsonText, rawDirty })); } catch { /* Browser storage is optional; export remains available. */ } }, [draft, tab, categoryKey, jsonText, rawDirty]);
   const change = (next: Profile) => { setDraft({ ...next, status: "draft" }); setDirty(true); setError(""); setNotice(""); };
   const accept = (next: Profile) => { setDraft(next); setJsonText(JSON.stringify(next, null, 2)); setRawDirty(false); setDirty(false); setPendingObjects({}); };
   const task = async (fn: () => Promise<void>) => { setBusy(true); setError(""); setNotice(""); try { await fn(); } catch (e) { setError((e as Error).message); } finally { setBusy(false); } };

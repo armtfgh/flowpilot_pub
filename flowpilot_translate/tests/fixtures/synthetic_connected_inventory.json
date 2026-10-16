@@ -1,0 +1,171 @@
+{
+  "profile_id": "synthetic_two_stage_light",
+  "name": "Synthetic two-stage optical fixture",
+  "lab_inventory": {
+    "schema_version": "flowpilot_lab_inventory_v3.0",
+    "strict_assignment": true,
+    "pumps": [
+      {
+        "equipment_id": "test_dual_stage_pump",
+        "name": "Synthetic test_dual_stage_pump",
+        "type": "syringe",
+        "min_flow_rate_mL_min": 0.03,
+        "max_flow_rate_mL_min": 0.6,
+        "max_pressure_bar": 15,
+        "compatible_materials": []
+      }
+    ],
+    "reactors": [
+      {
+        "equipment_id": "test_blue_coil_one",
+        "name": "Synthetic test_blue_coil_one",
+        "type": "coil",
+        "material": "PFA",
+        "volume_mL": 6,
+        "ID_mm": 0.9,
+        "min_temperature_C": 10,
+        "max_temperature_C": 140,
+        "max_pressure_bar": 25
+      },
+      {
+        "equipment_id": "test_blue_coil_two",
+        "name": "Synthetic test_blue_coil_two",
+        "type": "coil",
+        "material": "FEP",
+        "volume_mL": 8,
+        "ID_mm": 0.9,
+        "min_temperature_C": 10,
+        "max_temperature_C": 140,
+        "max_pressure_bar": 25
+      }
+    ],
+    "tubing": [
+      {
+        "equipment_id": "synthetic_tube_0",
+        "material": "FEP",
+        "ID_mm": 0.9,
+        "max_pressure_bar": 25,
+        "max_temperature_C": 140,
+        "transparent": true
+      },
+      {
+        "equipment_id": "synthetic_tube_1",
+        "material": "PFA",
+        "ID_mm": 0.9,
+        "max_pressure_bar": 25,
+        "max_temperature_C": 140,
+        "transparent": true
+      }
+    ],
+    "BPR_available": [
+      4
+    ],
+    "gas_hardware": [
+      {
+        "equipment_id": "test_oxygen_mfc",
+        "name": "Synthetic O2 controller",
+        "type": "MFC",
+        "gas": "O2",
+        "min_flow_sccm": 0.01,
+        "max_flow_sccm": 3,
+        "max_pressure_bar": 25
+      }
+    ],
+    "light_sources": [
+      {
+        "equipment_id": "test_blue_light_one",
+        "name": "Synthetic 455 nm light",
+        "wavelength_nm": 455,
+        "power_W": 6,
+        "intensity_mW_cm2": 75,
+        "quantity": 1,
+        "compatible_reactor": "coil"
+      },
+      {
+        "equipment_id": "test_blue_light_two",
+        "name": "Synthetic 445 nm light",
+        "wavelength_nm": 445,
+        "power_W": 6,
+        "intensity_mW_cm2": 75,
+        "quantity": 1,
+        "compatible_reactor": "coil"
+      }
+    ],
+    "mixers": [
+      {
+        "equipment_id": "synthetic_mixer_0",
+        "name": "Synthetic T junction",
+        "type": "T-mixer",
+        "material": "PFA",
+        "quantity": 1,
+        "max_inputs": 3,
+        "max_pressure_bar": 25
+      },
+      {
+        "equipment_id": "synthetic_mixer_1",
+        "name": "Synthetic T junction",
+        "type": "T-mixer",
+        "material": "PFA",
+        "quantity": 1,
+        "max_inputs": 3,
+        "max_pressure_bar": 25
+      }
+    ],
+    "temperature_controllers": [
+      {
+        "equipment_id": "synthetic_thermal",
+        "name": "Synthetic thermal enclosure",
+        "type": "heater_chiller",
+        "quantity": 2,
+        "min_temperature_C": 10,
+        "max_temperature_C": 140
+      }
+    ],
+    "connectors": [
+      {
+        "equipment_id": "synthetic_connectors",
+        "name": "Synthetic unions",
+        "type": "union",
+        "quantity": 10,
+        "material": "PFA",
+        "max_pressure_bar": 25
+      }
+    ],
+    "collectors": [
+      {
+        "equipment_id": "synthetic_collector",
+        "name": "Synthetic cooled quench receiver",
+        "type": "quench collector",
+        "volume_mL": 80,
+        "max_pressure_bar": 1
+      }
+    ],
+    "separators": [
+      {
+        "equipment_id": "synthetic_separator",
+        "name": "Synthetic vented separator",
+        "type": "gas-liquid separator",
+        "supported_phases": [
+          "gas",
+          "liquid"
+        ],
+        "max_pressure_bar": 25,
+        "max_flow_mL_min": 8
+      }
+    ],
+    "standard_reactor_connectors_available": true,
+    "pressure_controllers": [
+      {
+        "equipment_id": "synthetic_bpr",
+        "name": "Synthetic fixed regulator",
+        "type": "BPR",
+        "setpoints_bar": [
+          4
+        ],
+        "min_pressure_bar": 4,
+        "max_pressure_bar": 4
+      }
+    ]
+  },
+  "operating_constraints": {}
+}

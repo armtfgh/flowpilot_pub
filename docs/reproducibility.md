@@ -13,7 +13,7 @@ The public source does not by itself reproduce the manuscript's complete model-a
 
 ## Test fixtures and demonstration data
 
-The included fixtures are synthetic or anonymized computational inputs retained to test specific software behavior, such as schema handling, inventory constraints, topology and final-design consistency. They are not new laboratory data, a historical benchmark release or an experimental validation set. Chemistry names or numerical conditions in a fixture do not imply that an experiment was performed or that its outcome was measured.
+The included fixtures are purpose-built software inputs that test schema handling, inventory constraints, topology, numerical closure and final-design consistency. Saved research proposals, copied laboratory inventories and experimental feedback tables are excluded. Invented percentages in parser and refinement tests exercise software behavior; they are not measured outcomes or a historical benchmark release. Chemistry names in regression tests describe the behavior being tested, not an experimental record.
 
 The example protocol is a fictional input, and the web demonstration uses illustrative interface data. These examples help exercise the software; they do not substitute for a configured research corpus or establish the performance of the complete pipeline.
 

@@ -1,0 +1,265 @@
+{
+  "fixture_note": "Entirely invented software-test inputs; no measured chemistry, source extracts, or laboratory inventory.",
+  "batch": {
+    "reaction_description": "Synthetic two-stage photochemical software test.",
+    "solvent": "water",
+    "temperature_C": 30,
+    "reaction_time_h": 3,
+    "concentration_M": 0.2,
+    "scale_mmol": 0.1,
+    "wavelength_nm": 460,
+    "atmosphere": "argon then air",
+    "raw_text": "Synthetic staged oxidation software test. Stage 1: Irradiate substrate A in water under argon at 30 deg C for 1 h. Stage 2: Expose the mixture to ambient air and irradiate at 30 deg C for 2 h."
+  },
+  "plan": {
+    "reaction_name": "Synthetic staged light test",
+    "reaction_class": "photochemical oxidation",
+    "n_stages": 2,
+    "o2_is_reagent": true,
+    "recommended_wavelength_nm": 460,
+    "reagents": [
+      {
+        "name": "substrate A",
+        "role": "substrate"
+      },
+      {
+        "name": "water",
+        "role": "solvent"
+      }
+    ],
+    "stream_logic": [
+      {
+        "stream_label": "A",
+        "reagents": [
+          "substrate A",
+          "water"
+        ],
+        "phase": "liquid",
+        "concentration_M": 0.2,
+        "molar_equiv": 1,
+        "introduction_stage": 1
+      },
+      {
+        "stream_label": "G",
+        "reagents": [
+          "O2"
+        ],
+        "phase": "gas",
+        "molar_equiv": 2,
+        "gas_reagent_mole_fraction": 1,
+        "introduction_stage": 2
+      }
+    ],
+    "stages": [
+      {
+        "stage_number": 1,
+        "stage_name": "First light stage",
+        "requires_light": true,
+        "wavelength_nm": 460,
+        "temperature_C": 30,
+        "batch_time_h": 1,
+        "solvent": "water",
+        "atmosphere": "argon",
+        "feed_streams": [
+          {
+            "stream_label": "A",
+            "reagents": [
+              "substrate A",
+              "water"
+            ],
+            "phase": "liquid",
+            "concentration_M": 0.2,
+            "molar_equiv": 1,
+            "introduction_stage": 1
+          }
+        ]
+      },
+      {
+        "stage_number": 2,
+        "stage_name": "Gas and light stage",
+        "requires_light": true,
+        "wavelength_nm": 460,
+        "temperature_C": 30,
+        "batch_time_h": 2,
+        "solvent": "water",
+        "atmosphere": "O2",
+        "inlet_from_previous": "Stage 1 effluent",
+        "feed_streams": [
+          {
+            "stream_label": "G",
+            "reagents": [
+              "O2"
+            ],
+            "phase": "gas",
+            "molar_equiv": 2,
+            "gas_reagent_mole_fraction": 1,
+            "introduction_stage": 2
+          }
+        ]
+      }
+    ],
+    "scientific_context": {
+      "gas_delivery": {
+        "calculation_basis": "inlet_stp",
+        "species": "O2",
+        "reagent_mole_fraction": 1,
+        "identity_source": "chemist_answer",
+        "feed_selection_mode": "agent_to_propose",
+        "equiv_source": "chemist_delegated_with_justification_required",
+        "introduction_stage": 2,
+        "introduction_stage_source": "chemist_answer"
+      },
+      "operating_limits": {
+        "inline_degasser_available": false
+      }
+    }
+  },
+  "proposal": {
+    "residence_time_min": 180,
+    "flow_rate_mL_min": 0.03,
+    "temperature_C": 30,
+    "concentration_M": 0.2,
+    "BPR_bar": 2,
+    "reactor_type": "coil",
+    "tubing_material": "PFA",
+    "tubing_ID_mm": 0.8,
+    "reactor_volume_mL": 9,
+    "wavelength_nm": 460,
+    "streams": [
+      {
+        "stream_label": "A",
+        "contents": [
+          "substrate A",
+          "water"
+        ],
+        "solvent": "water",
+        "phase": "liquid",
+        "concentration_M": 0.2,
+        "molar_equiv": 1,
+        "flow_rate_mL_min": 0.03,
+        "introduction_stage": 1
+      },
+      {
+        "stream_label": "G",
+        "contents": [
+          "O2"
+        ],
+        "phase": "gas",
+        "molar_equiv": 2,
+        "gas_reagent_mole_fraction": 1,
+        "introduction_stage": 2
+      }
+    ]
+  },
+  "inventory": {
+    "strict_assignment": true,
+    "standard_reactor_connectors_available": true,
+    "pumps": [
+      {
+        "equipment_id": "pump-a",
+        "name": "Synthetic liquid pump",
+        "type": "syringe",
+        "max_pressure_bar": 12,
+        "min_flow_rate_mL_min": 0.0001,
+        "max_flow_rate_mL_min": 2
+      }
+    ],
+    "tubing": [
+      {
+        "equipment_id": "tube-pfa",
+        "material": "PFA",
+        "ID_mm": 0.8,
+        "max_pressure_bar": 12,
+        "max_temperature_C": 60,
+        "transparent": true
+      },
+      {
+        "equipment_id": "tube-fep",
+        "material": "FEP",
+        "ID_mm": 0.8,
+        "max_pressure_bar": 12,
+        "max_temperature_C": 60,
+        "transparent": true
+      }
+    ],
+    "light_sources": [
+      {
+        "equipment_id": "lamp-a",
+        "name": "Synthetic lamp a",
+        "wavelength_nm": 460,
+        "power_W": 2,
+        "compatible_reactor": "coil"
+      },
+      {
+        "equipment_id": "lamp-b",
+        "name": "Synthetic lamp b",
+        "wavelength_nm": 460,
+        "power_W": 2,
+        "compatible_reactor": "coil"
+      }
+    ],
+    "gas_hardware": [
+      {
+        "equipment_id": "gas-a",
+        "name": "Synthetic gas controller",
+        "type": "MFC",
+        "gas": "O2",
+        "min_flow_sccm": 0.0001,
+        "max_flow_sccm": 5,
+        "max_pressure_bar": 12
+      }
+    ],
+    "reactors": [
+      {
+        "equipment_id": "coil-3",
+        "name": "Synthetic coil 3",
+        "type": "coil",
+        "material": "PFA",
+        "volume_mL": 3,
+        "ID_mm": 0.8,
+        "max_pressure_bar": 12,
+        "max_temperature_C": 60
+      },
+      {
+        "equipment_id": "coil-6",
+        "name": "Synthetic coil 6",
+        "type": "coil",
+        "material": "FEP",
+        "volume_mL": 6,
+        "ID_mm": 0.8,
+        "max_pressure_bar": 12,
+        "max_temperature_C": 60
+      },
+      {
+        "equipment_id": "coil-9",
+        "name": "Synthetic coil 9",
+        "type": "coil",
+        "material": "PFA",
+        "volume_mL": 9,
+        "ID_mm": 0.8,
+        "max_pressure_bar": 12,
+        "max_temperature_C": 60
+      },
+      {
+        "equipment_id": "coil-12",
+        "name": "Synthetic coil 12",
+        "type": "coil",
+        "material": "FEP",
+        "volume_mL": 12,
+        "ID_mm": 0.8,
+        "max_pressure_bar": 12,
+        "max_temperature_C": 60
+      }
+    ],
+    "pressure_controllers": [
+      {
+        "equipment_id": "bpr-a",
+        "name": "Synthetic pressure controller",
+        "setpoints_bar": [
+          2
+        ],
+        "max_pressure_bar": 12
+      }
+    ]
+  }
+}

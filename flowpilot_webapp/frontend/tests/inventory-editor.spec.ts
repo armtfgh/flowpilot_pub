@@ -114,6 +114,6 @@ test("advanced constraints cannot be silently bypassed and bind to design", asyn
   await expect(page.getByRole("button", { name: "Use in design", exact: true })).toBeEnabled();
   await page.getByRole("button", { name: "Use in design", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Design studio", exact: true })).toBeVisible();
-  const stored = await page.evaluate(() => JSON.parse(sessionStorage.getItem("flowpilot_workspace_v1") || "{}"));
+  const stored = await page.evaluate(() => JSON.parse(sessionStorage.getItem("flowpilot_publication_workspace_v1") || "{}"));
   expect(JSON.stringify(stored)).toContain('custom_test_limit');
 });

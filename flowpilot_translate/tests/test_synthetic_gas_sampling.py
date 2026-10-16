@@ -1,20 +1,4 @@
-"""Regression test for the tetrahydroquinoline -> quinoline aerobic
-photo-oxidation case study (May 27 2026).
-
-In the original log this protocol triggered:
-  - calculator τ = 187.5 min, ΔP = 64 bar (way above BPR ceiling)
-  - design_space top candidate τ = 93.8 min, d = 1.0 mm (feasible)
-  - council Designer v4 sampling: 0 feasible / 4 sampling-infeasible
-  - council fully SKIPPED → no domain agent input, no Skeptic audit
-  - final confidence: MEDIUM
-
-The fixes verified here:
-  1. design_space and sampling agree about feasibility (unified function)
-  2. gas-liquid photochem allows d up to 1.6 mm (not capped at 1.0 mm)
-  3. design space candidates flow into the council as fallback seeds when
-     the Designer's own sampling returns zero
-  4. O2-is-reagent disambiguation: aerobic oxidation is NOT O2-inhibited
-"""
+"""Synthetic gas/liquid sampling checks; no measured protocol or run outcomes."""
 
 from __future__ import annotations
 
@@ -26,7 +10,6 @@ from flowpilot_translate.engine.design_space import (
 from flowpilot_translate.engine.sampling import (
     choose_d_set,
     compute_metrics,
-    generate_candidates,
     hard_filter,
 )
 from flowpilot_translate.engine.council_v4.designer import _apply_v4_hard_gates
@@ -38,36 +21,35 @@ from flowpilot_translate.schemas import (
 )
 
 
-THQ_PROTOCOL_TEXT = (
-    "Photocatalyst-free aerobic oxidative dehydrogenation of "
-    "6-methyl-1,2,3,4-tetrahydroquinoline (0.20 mmol) in DMSO (0.40 mL, 0.50 M) "
-    "with O2 (1 atm, 2.0 equiv from balloon) under blue LEDs (450 nm), 40 C, 15 h. "
-    "Affords 6-methylquinoline in 75% yield."
+SYNTHETIC_PROTOCOL_TEXT = (
+    "Artificial photochemical oxidation test with test solute in water, "
+    "O2 as a reagent, a 460 nm light setting, and a 2 h hold at 30 C. "
+    "These software inputs are not an experimental procedure."
 )
 
 
-def _thq_batch() -> BatchRecord:
+def _synthetic_batch() -> BatchRecord:
     return BatchRecord(
-        reaction_description=THQ_PROTOCOL_TEXT,
-        solvent="DMSO",
-        temperature_C=40,
-        reaction_time_h=15,
-        concentration_M=0.5,
+        reaction_description=SYNTHETIC_PROTOCOL_TEXT,
+        solvent="water",
+        temperature_C=30,
+        reaction_time_h=2,
+        concentration_M=0.2,
         scale_mmol=0.2,
-        wavelength_nm=450,
+        wavelength_nm=460,
         atmosphere="O2",
     )
 
 
-def _thq_plan() -> ChemistryPlan:
+def _synthetic_plan() -> ChemistryPlan:
     return ChemistryPlan(
         reaction_class="photoredox aerobic oxidation",
-        mechanism_type="direct photoexcitation, SET to O2",
+        mechanism_type="synthetic photochemical test",
         oxygen_sensitive=False,
         o2_is_reagent=True,
-        recommended_wavelength_nm=450,
+        recommended_wavelength_nm=460,
         stream_logic=[
-            StreamLogic(stream_label="A", reagents=["6-methyl-THQ", "DMSO"], concentration_M=0.5, phase="liquid"),
+            StreamLogic(stream_label="A", reagents=["test solute", "water"], concentration_M=0.2, phase="liquid"),
             StreamLogic(stream_label="B", reagents=["O2"], phase="gas"),
         ],
         stages=[
@@ -75,11 +57,11 @@ def _thq_plan() -> ChemistryPlan:
                 stage_number=1,
                 stage_name="Aerobic photoredox oxidation",
                 requires_light=True,
-                wavelength_nm=450,
-                solvent="DMSO",
+                wavelength_nm=460,
+                solvent="water",
                 atmosphere="O2",
                 feed_streams=[
-                    StreamLogic(stream_label="A", reagents=["6-methyl-THQ", "DMSO"], concentration_M=0.5, phase="liquid"),
+                    StreamLogic(stream_label="A", reagents=["test solute", "water"], concentration_M=0.2, phase="liquid"),
                     StreamLogic(stream_label="B", reagents=["O2"], phase="gas"),
                 ],
             )
@@ -107,8 +89,8 @@ def test_hard_filter_allows_d_1p6_for_gas_liquid_photochem():
     """sampling.hard_filter must not reject d=1.6 mm for gas-liquid photochem."""
     metrics = compute_metrics(
         tau_min=5.0, d_mm=1.6, Q_mL_min=2.0,
-        solvent="DMSO", temperature_C=40, concentration_M=0.5,
-        assumed_MW=143.0, IF_used=6.0, tau_kinetics_min=5.0,
+        solvent="water", temperature_C=30, concentration_M=0.2,
+        assumed_MW=100.0, IF_used=6.0, tau_kinetics_min=5.0,
         pump_max_bar=20.0, is_photochem=True, is_gas_liquid=True,
         BPR_bar=7.0,
     )
@@ -147,24 +129,22 @@ def test_hard_filter_still_rejects_d_1p6_for_dry_photochem():
 class _StubCalc:
     """Minimal stand-in for DesignCalculations used in pre-council seeding."""
     is_gas_liquid = True
-    residence_time_min = 90.0
-    tau_analogy_min = 180.0
+    residence_time_min = 30.0
+    tau_analogy_min = 60.0
     tau_class_min = None
-    tau_kinetics_min = 90.0
+    tau_kinetics_min = 30.0
     rate_constant = None
     intensification_factor = 5.0
-    concentration_M = 0.5
+    concentration_M = 0.2
     pump_max_bar = 20.0
     bpr_pressure_bar = 7.0
     extinction_coefficient_M_cm = None
 
 
-def test_design_space_finds_feasible_candidates_for_thq_protocol():
-    """The fixed pipeline must find at least one feasible design space candidate
-    for the THQ aerobic oxidation. Originally the council got 0 survivors and
-    silently skipped — that path is what this test guards against."""
-    batch = _thq_batch()
-    plan = _thq_plan()
+def test_design_space_finds_feasible_candidates_for_synthetic_gas_input():
+    """A synthetic gas/liquid input must provide at least one fallback seed."""
+    batch = _synthetic_batch()
+    plan = _synthetic_plan()
     calc = _StubCalc()
     candidates = DesignSpaceSearch().run(
         batch_record=batch, chemistry_plan=plan, calculations=calc, inventory=None,
@@ -172,8 +152,7 @@ def test_design_space_finds_feasible_candidates_for_thq_protocol():
     )
     feasible = [c for c in candidates if c.feasible]
     assert feasible, (
-        "Design Space found ZERO feasible candidates for THQ protocol — "
-        "this is the regression we fixed. Check d_set / two-phase ΔP / BPR ceiling logic."
+        "Synthetic gas/liquid input should have a feasible candidate."
     )
     # Top candidate must be gas-liquid-aware (gas_holdup > 0)
     top = get_council_starting_point(candidates)
@@ -186,8 +165,8 @@ def test_design_space_seeds_pass_council_v4_hard_gates():
     """Feasible Design Space candidates fed as council fallback seeds must pass
     the council's v4 hard-gate filter (or carry survivable flags). If they
     don't, the fallback is useless — the council still skips."""
-    batch = _thq_batch()
-    plan = _thq_plan()
+    batch = _synthetic_batch()
+    plan = _synthetic_plan()
     calc = _StubCalc()
     candidates = DesignSpaceSearch().run(
         batch_record=batch, chemistry_plan=plan, calculations=calc, inventory=None,
@@ -195,12 +174,12 @@ def test_design_space_seeds_pass_council_v4_hard_gates():
     )
     seeds = feasible_candidates_as_council_seeds(
         candidates, BPR_bar=7.0, tubing_material="FEP",
-        concentration_M=0.5, temperature_C=40,
-        batch_time_min=15 * 60, n_max=6,
+        concentration_M=0.2, temperature_C=30,
+        batch_time_min=2 * 60, n_max=6,
     )
     assert seeds, "No seeds produced from feasible candidates"
     # All v4 gates should pass with relaxed X_minimum=0 (consistent with
-    # uncertain_kinetics_screen branch the council uses for THQ).
+    # uncertain_kinetics_screen branch for unmeasured test chemistry).
     survivors, flagged = _apply_v4_hard_gates(
         list(seeds), pump_max_bar=20.0,
         is_photochem=True, is_gas_liquid=True,
@@ -216,12 +195,10 @@ def test_design_space_seeds_pass_council_v4_hard_gates():
 #  3. Designer sampling agrees with design_space (no feasibility divergence)
 # ─────────────────────────────────────────────────────────────────────────
 
-def test_sampling_and_design_space_agree_on_feasibility_for_thq():
-    """For the THQ regime, sampling.generate_candidates and DesignSpaceSearch
-    must agree about whether a given (τ, d, Q) is feasible. Pre-fix they
-    disagreed because design_space ignored gas-liquid two-phase ΔP."""
-    batch = _thq_batch()
-    plan = _thq_plan()
+def test_sampling_and_design_space_agree_on_feasibility_for_synthetic_gas_input():
+    """Design-space and sampling checks agree on the same synthetic point."""
+    batch = _synthetic_batch()
+    plan = _synthetic_plan()
     calc = _StubCalc()
     # Run design_space first
     ds_candidates = DesignSpaceSearch().run(
@@ -235,8 +212,8 @@ def test_sampling_and_design_space_agree_on_feasibility_for_thq():
     pt = ds_feasible[0]
     metrics = compute_metrics(
         tau_min=pt.tau_min, d_mm=pt.d_mm, Q_mL_min=pt.Q_mL_min,
-        solvent="DMSO", temperature_C=40, concentration_M=0.5,
-        assumed_MW=143.0, IF_used=5.0, tau_kinetics_min=pt.tau_kinetics_min,
+        solvent="water", temperature_C=30, concentration_M=0.2,
+        assumed_MW=100.0, IF_used=5.0, tau_kinetics_min=pt.tau_kinetics_min,
         pump_max_bar=20.0, is_photochem=True, is_gas_liquid=True,
         BPR_bar=7.0,
     )

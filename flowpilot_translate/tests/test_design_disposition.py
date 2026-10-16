@@ -25,7 +25,7 @@ from flowpilot_translate.schemas import (
 SCENARIOS_PATH = (
     Path(__file__).resolve().parent
     / "fixtures"
-    / "design_disposition_scenarios.json"
+    / "synthetic_disposition_cases.json"
 )
 
 
@@ -74,12 +74,12 @@ def _proposal(**updates) -> FlowProposal:
     return FlowProposal(**data)
 
 
-def test_unconfirmed_khu_hardware_blocks_gas_multistage_candidate():
+def test_unconfirmed_synthetic_hardware_blocks_gas_multistage_candidate():
     inventory = LabInventory(
         BPR_available=[],
         gas_hardware=[
             GasHardwareSpec(
-                name="KHU oxygen mass-flow controller",
+                name="Synthetic oxygen controller",
                 type="MFC",
                 gas="O2",
                 min_flow_sccm=0.01,
@@ -89,7 +89,7 @@ def test_unconfirmed_khu_hardware_blocks_gas_multistage_candidate():
         ],
         reactors=[
             ReactorSpec(
-                name="KHU PFA coil 10 mL",
+                name="Synthetic PFA coil",
                 type="coil",
                 material="PFA",
                 volume_mL=10.0,
@@ -248,28 +248,28 @@ def _decision(
     ("case_id", "inventory_id", "proposal", "batch", "plan", "expected"),
     [
         (
-            "suzuki_feasible",
+            "thermal_available",
             "thermal_feasible",
-            _proposal(temperature_C=50),
+            _proposal(temperature_C=52),
             None,
-            ChemistryPlan(reaction_class="Suzuki-Miyaura"),
+            ChemistryPlan(reaction_class="thermal transformation"),
             "SCREEN",
         ),
         (
-            "suzuki_infeasible",
-            "thermal_infeasible_40c",
-            _proposal(temperature_C=40),
+            "thermal_unavailable",
+            "thermal_infeasible_36c",
+            _proposal(temperature_C=36),
             None,
-            ChemistryPlan(reaction_class="Suzuki-Miyaura"),
+            ChemistryPlan(reaction_class="thermal transformation"),
             "BLOCK",
         ),
         (
-            "photo_oxidation_feasible",
-            "photo_420_feasible",
+            "optical_available",
+            "photo_435_feasible",
             _proposal(
-                temperature_C=21,
+                temperature_C=29,
                 tubing_material="FEP",
-                wavelength_nm=420,
+                wavelength_nm=435,
                 streams=[
                     StreamAssignment(
                         stream_label="G",
@@ -286,12 +286,12 @@ def _decision(
             "SCREEN",
         ),
         (
-            "photo_oxidation_infeasible",
-            "photo_525_infeasible",
+            "optical_unavailable",
+            "photo_510_infeasible",
             _proposal(
-                temperature_C=21,
+                temperature_C=29,
                 tubing_material="FEP",
-                wavelength_nm=525,
+                wavelength_nm=510,
                 streams=[
                     StreamAssignment(
                         stream_label="G",
@@ -308,11 +308,11 @@ def _decision(
             "BLOCK",
         ),
         (
-            "hydrogenolysis_feasible",
+            "hydrogen_available",
             "hydrogen_feasible",
             _proposal(
-                temperature_C=60,
-                BPR_bar=10,
+                temperature_C=55,
+                BPR_bar=12,
                 tubing_material="SS",
                 reactor_type="packed_bed",
                 streams=[
@@ -334,11 +334,11 @@ def _decision(
             "SCREEN",
         ),
         (
-            "hydrogenolysis_infeasible",
+            "hydrogen_unavailable",
             "hydrogen_unavailable",
             _proposal(
-                temperature_C=60,
-                BPR_bar=10,
+                temperature_C=55,
+                BPR_bar=12,
                 tubing_material="SS",
                 reactor_type="packed_bed",
                 streams=[
@@ -360,12 +360,12 @@ def _decision(
             "BLOCK",
         ),
         (
-            "dinitration_feasible",
+            "acid_available",
             "nitration_feasible",
             _proposal(
-                temperature_C=60,
+                temperature_C=55,
                 tubing_material="PTFE",
-                tubing_ID_mm=0.5,
+                tubing_ID_mm=0.7,
             ),
             BatchRecord(
                 reaction_description="Dinitration with concentrated nitric acid",
@@ -375,9 +375,9 @@ def _decision(
             "SCREEN",
         ),
         (
-            "dinitration_infeasible",
+            "acid_unavailable",
             "nitration_prohibited",
-            _proposal(temperature_C=60, tubing_material="FEP"),
+            _proposal(temperature_C=55, tubing_material="FEP"),
             BatchRecord(
                 reaction_description="Dinitration with concentrated nitric acid",
                 raw_text="Dinitration with nitric acid.",
@@ -386,13 +386,13 @@ def _decision(
             "BLOCK",
         ),
         (
-            "multistep_feasible",
+            "multistage_available",
             "multistep_feasible",
             _proposal(
-                temperature_C=80,
+                temperature_C=74,
                 tubing_material="PFA",
                 reactor_type="two_stage_coil_train",
-                reactor_volume_mL=15,
+                reactor_volume_mL=18,
             ),
             None,
             ChemistryPlan(
@@ -403,10 +403,10 @@ def _decision(
             "SCREEN",
         ),
         (
-            "multistep_infeasible",
+            "multistage_unavailable",
             "multistep_infeasible",
             _proposal(
-                temperature_C=80,
+                temperature_C=74,
                 tubing_material="PFA",
                 reactor_type="single_coil",
             ),
@@ -475,21 +475,21 @@ def test_screen_required_alone_does_not_become_block():
 
 
 def test_apply_gate_sets_one_authoritative_top_level_disposition():
-    proposal = _proposal(temperature_C=40)
+    proposal = _proposal(temperature_C=36)
     validation = _validation_ready()
     result = {
         "proposal": proposal.model_dump(),
         "final_validation": json.loads(json.dumps(validation)),
     }
-    case = _case("suzuki_infeasible")
+    case = _case("thermal_unavailable")
 
     decision = apply_design_disposition_gate(
         result,
         proposal=proposal,
         final_validation=validation,
-        inventory=_inventory("thermal_infeasible_40c"),
+        inventory=_inventory("thermal_infeasible_36c"),
         batch_record=BatchRecord(reaction_description=case["protocol"]),
-        chemistry_plan=ChemistryPlan(reaction_class="Suzuki-Miyaura"),
+        chemistry_plan=ChemistryPlan(reaction_class="thermal transformation"),
         objective=case["objective"],
         hard_constraints=case["hard_constraints"],
     )

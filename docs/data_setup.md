@@ -4,6 +4,12 @@ The public source includes the pipeline, schemas, prompts, generic inventory inp
 
 The populated interface at `?demo=1` can be explored without those resources. A live research workflow should use deliberately configured data rather than assume that the demo or source checkout reproduces the manuscript environment.
 
+## Starting without earlier user data
+
+A fresh installation contains no saved runs, uploaded documents, inventory profiles, experimental feedback or research records. The optional demo is a fictional software example with no measured outcomes. It neither reads backend history nor restores browser drafts.
+
+Normal operation saves the user's own work under `FLOWPILOT_HOME`. To start a separate workspace on a machine that already runs FlowPilot, set this variable to a new, empty directory before launching the app. Also unset `FLOWPILOT_INVENTORY_PROFILE_DIR` if it points to an older profile collection. Existing directories are not deleted or silently imported from another project. The publication interface uses separate browser-draft keys from earlier development versions.
+
 ## Literature records
 
 Supply structured JSON records that you have permission to use. The record schemas are defined in [`flowpilot_translate/schemas.py`](../flowpilot_translate/schemas.py); extraction-format normalization is implemented in [`flowpilot_translate/vector_store.py`](../flowpilot_translate/vector_store.py).

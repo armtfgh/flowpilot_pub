@@ -261,7 +261,7 @@ def test_stage_prose_cannot_turn_liquid_feed_into_oxygen_stream():
     assert stage_two["Q_gas_sccm"] == 0.2
 
 
-def test_khu_stagewise_residence_time_arithmetic_uses_correct_gas_basis():
+def test_example_stagewise_residence_time_arithmetic_uses_correct_gas_basis():
     proposal = _proposal()
     proposal.flow_rate_mL_min = 0.43454
     proposal.streams[0].flow_rate_mL_min = 0.43454
@@ -312,7 +312,7 @@ def test_multistage_reconciliation_uses_frozen_temperature_limits_for_old_invent
         inventory,
         operating_limits={
             "photoreactor_limits": {
-                "KHU manual blue photoreactor": {
+                "EXAMPLE manual blue photoreactor": {
                     "allowed_temperatures_C": [40.0, 50.0]
                 }
             }

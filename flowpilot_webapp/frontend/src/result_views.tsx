@@ -37,10 +37,10 @@ export function ProcessSummary({result}: {result: Json}) {
     const a = document.createElement("a"); a.href = url; a.download = "flowpilot_process_summary.csv"; a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
-  if (report.status !== "executable") return <p>No accepted process setpoints are available.</p>;
+  if (!result.synthetic_demo && report.status !== "executable") return <p>No accepted process setpoints are available.</p>;
   return <div className="reportStack">
-    <div className="sectionTitle"><h2>Process summary</h2><button className="secondary" onClick={download}><Download size={14}/>CSV</button></div>
-    <p className="reportNote">Gas reference: 273.15 K, 1.01325 bar. Gas-stage time = reactor volume / (liquid flow + inlet/STP gas flow); liquid-stage time = volume / liquid flow.</p>
+    <div className="sectionTitle"><h2>Process summary</h2><button className="secondary" disabled={result.synthetic_demo} onClick={download}><Download size={14}/>CSV</button></div>
+    <p className="reportNote">{result.synthetic_demo ? "Fictional liquid-stage example: nominal time = volume / liquid flow. No measurements or model results are included." : "Gas reference: 273.15 K, 1.01325 bar. Gas-stage time = reactor volume / (liquid flow + inlet/STP gas flow); liquid-stage time = volume / liquid flow."}</p>
     {(report.issues || []).map((s: string) => <div className="warningRow" key={s}><AlertTriangle size={16}/>{s}</div>)}
     <StageTable rows={stages}/>
     <h3>Feed streams</h3>
@@ -97,6 +97,7 @@ function ProposalSnapshot({value}: {value: Json}) {
 }
 
 export function EngineeringHistory({result}: {result: Json}) {
+  if (result.synthetic_demo) return <section className="finalEngineering"><div className="sectionTitle"><h2>Illustrative liquid-stage arithmetic</h2></div><StageTable rows={result.result_report?.stages || []}/><p>4 mL ÷ 0.4 mL/min = 10 min. These fictional values illustrate the interface; no engineering validation or council run was performed.</p></section>;
   const history = result.engineering_history || {};
   const before = history.before_council || {};
   const after = history.after_council || {};

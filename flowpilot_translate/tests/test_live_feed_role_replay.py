@@ -13,8 +13,10 @@ from flowpilot_translate.schemas import BatchRecord, ChemistryPlan, FlowProposal
 
 @pytest.mark.parametrize("case", ["cuaac", "hydrogenolysis", "photochemical_oxidation"])
 def test_raw_live_proposals_survive_feed_reconciliation(case):
-    root = Path(os.environ.get("FLOW_REPLAY_ROOT", Path(__file__).resolve().parents[2]))
-    base = root / "ablation_results/manuscript_benchmark/astra_verified_repairs_dev01_20261012/generation" / case / "astra_flowpilot/repeat_01"
+    archive = os.environ.get("FLOWPILOT_TEST_MODEL_REPLAY_DIR")
+    if not archive:
+        pytest.skip("Optional external model replay directory not configured")
+    base = Path(archive) / case
     if not (base / "result.json").exists():
         pytest.skip("Optional live development archive absent")
     result = json.loads((base / "result.json").read_text())

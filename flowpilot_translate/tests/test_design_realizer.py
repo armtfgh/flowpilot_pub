@@ -27,7 +27,7 @@ FIXTURES = Path(__file__).parent / "fixtures"
 
 
 def _case(name: str) -> dict:
-    return json.loads((FIXTURES / "realizer_inputs.json").read_text())[name]
+    return json.loads((FIXTURES / "synthetic_realizer_cases.json").read_text())[name]
 
 
 def _realize(name: str, proposal: FlowProposal, plan: ChemistryPlan):
@@ -56,8 +56,8 @@ def test_nitration_realization_solves_each_pump_and_removes_unavailable_bpr():
             StreamAssignment(
                 stream_label="A",
                 pump_role="organic substrate",
-                contents=["N-(1-ethylpropyl)-3,4-xylidine"],
-                solvent="1,2-dichloroethane",
+                contents=["anisole"],
+                solvent="acetonitrile",
                 concentration_M=0.1,
             ),
             StreamAssignment(
@@ -73,8 +73,8 @@ def test_nitration_realization_solves_each_pump_and_removes_unavailable_bpr():
         reaction_name="Direct dinitration",
         reaction_class="dinitration",
         stream_logic=[
-            StreamLogic(stream_label="A", reagents=["N-alkyl aniline"], concentration_M=0.1),
-            StreamLogic(stream_label="B", reagents=["Nitric acid"], concentration_M=0.1),
+            StreamLogic(stream_label="A", reagents=["anisole"], concentration_M=0.1),
+            StreamLogic(stream_label="B", reagents=["Nitric acid"], concentration_M=0.1, molar_equiv=2.0),
         ],
     )
 
@@ -83,12 +83,12 @@ def test_nitration_realization_solves_each_pump_and_removes_unavailable_bpr():
     assert report["status"] == "complete"
     assert validation["status"] == "ready"
     assert realized.BPR_bar == 0
-    assert realized.reactor_volume_mL == 0.2
-    assert realized.flow_rate_mL_min == 1.5
-    assert realized.residence_time_min == pytest.approx(0.2 / 1.5, rel=1e-5)
+    assert realized.reactor_volume_mL == 0.4
+    assert realized.flow_rate_mL_min == 0.6
+    assert realized.residence_time_min == pytest.approx(0.4 / 0.6, rel=1e-5)
     assert [(item.pump_equipment_id, item.flow_rate_mL_min) for item in realized.streams] == [
-        ("pump_nit_org", 0.5),
-        ("pump_nit_acid", 1.0),
+        ("test_acid_feed_a", 0.2),
+        ("test_acid_feed_b", 0.4),
     ]
     assert realized.streams[1].molar_equiv == 2.0
 
@@ -97,18 +97,18 @@ def test_hydrogen_realization_reports_stp_actual_and_equivalents():
     proposal = FlowProposal(
         residence_time_min=6,
         flow_rate_mL_min=0.5,
-        temperature_C=60,
-        concentration_M=0.126,
+        temperature_C=55,
+        concentration_M=0.18,
         BPR_bar=5,
         reactor_type="packed-bed",
         reactor_volume_mL=3,
         streams=[
             StreamAssignment(
                 stream_label="A",
-                pump_role="DMAOL feed",
-                contents=["DMAOL", "Methanol"],
+                pump_role="substrate H feed",
+                contents=["substrate H", "Methanol"],
                 solvent="Methanol",
-                concentration_M=0.126,
+                concentration_M=0.18,
             ),
             StreamAssignment(
                 stream_label="G",
@@ -121,7 +121,7 @@ def test_hydrogen_realization_reports_stp_actual_and_equivalents():
     plan = ChemistryPlan(
         reaction_name="Hydrogenolysis",
         stream_logic=[
-            StreamLogic(stream_label="A", reagents=["DMAOL", "Methanol"], concentration_M=0.126),
+            StreamLogic(stream_label="A", reagents=["substrate H", "Methanol"], concentration_M=0.18),
             StreamLogic(stream_label="G", reagents=["H2"], phase="gas"),
         ],
     )
@@ -130,12 +130,12 @@ def test_hydrogen_realization_reports_stp_actual_and_equivalents():
 
     gas = realized.streams[1]
     assert validation["status"] == "ready"
-    assert realized.BPR_bar == 21
-    assert gas.pump_equipment_id == "mfc_h2_100"
-    assert gas.gas_flow_sccm >= 1
+    assert realized.BPR_bar == 12
+    assert gas.pump_equipment_id == "test_hydrogen_mfc"
+    assert gas.gas_flow_sccm >= 0.2
     assert gas.gas_flow_actual_mL_min < gas.gas_flow_sccm
     assert gas.gas_flow_actual_mL_min == pytest.approx(
-        actual_gas_flow_from_stp(gas.gas_flow_sccm, 60.0, 21.0), rel=1e-5
+        actual_gas_flow_from_stp(gas.gas_flow_sccm, 55.0, 12.0), rel=1e-5
     )
     assert gas.molar_equiv == pytest.approx(1.0, rel=1e-3)
     gas_decision = next(
@@ -158,27 +158,27 @@ def test_multistage_realization_repairs_stage_map_and_closes_cumulative_flows():
     proposal = FlowProposal(
         residence_time_min=180,
         flow_rate_mL_min=0.07,
-        temperature_C=80,
-        concentration_M=0.667,
+        temperature_C=74,
+        concentration_M=0.3,
         BPR_bar=3,
         streams=[
-            StreamAssignment(stream_label="A", contents=["Benzyl alcohol"], concentration_M=0.667),
-            StreamAssignment(stream_label="B", contents=["H2O2", "NaBr", "H2SO4"], concentration_M=0.667),
-            StreamAssignment(stream_label="C", contents=["Morpholine", "TBHP"], concentration_M=0.667),
+            StreamAssignment(stream_label="A", contents=["alcohol A"], concentration_M=0.3),
+            StreamAssignment(stream_label="B", contents=["H2O2", "NaBr", "H2SO4"], concentration_M=0.3),
+            StreamAssignment(stream_label="C", contents=["amine B", "organic peroxide"], concentration_M=0.3),
         ],
     )
     global_streams = [
-        StreamLogic(stream_label="A", reagents=["Benzyl alcohol"], reasoning="Stage 1 substrate", concentration_M=0.667),
-        StreamLogic(stream_label="B", reagents=["H2O2"], reasoning="Stage 1 oxidant", molar_equiv=2, concentration_M=0.667),
-        StreamLogic(stream_label="C", reagents=["Morpholine", "TBHP"], reasoning="Stage 2 feed", concentration_M=0.667),
+        StreamLogic(stream_label="A", reagents=["alcohol A"], reasoning="Stage 1 substrate", concentration_M=0.3),
+        StreamLogic(stream_label="B", reagents=["H2O2"], reasoning="Stage 1 oxidant", molar_equiv=2, concentration_M=0.3),
+        StreamLogic(stream_label="C", reagents=["amine B", "organic peroxide"], reasoning="Stage 2 feed", concentration_M=0.3),
     ]
     placeholder = StreamLogic(stream_label="A", reagents=["placeholder"])
     plan = ChemistryPlan(
         n_stages=2,
         stream_logic=global_streams,
         stages=[
-            ProcessStage(stage_number=1, stage_name="Oxidation", temperature_C=70, feed_streams=[placeholder]),
-            ProcessStage(stage_number=2, stage_name="Amidation", temperature_C=80, feed_streams=[placeholder]),
+            ProcessStage(stage_number=1, stage_name="Oxidation", temperature_C=62, feed_streams=[placeholder]),
+            ProcessStage(stage_number=2, stage_name="Amidation", temperature_C=74, feed_streams=[placeholder]),
         ],
     )
 
@@ -189,13 +189,13 @@ def test_multistage_realization_repairs_stage_map_and_closes_cumulative_flows():
     assert realized.BPR_bar == 0
     assert [item.introduction_stage for item in realized.streams] == [1, 1, 2]
     assert [item["reactor_equipment_id"] for item in stages] == [
-        "reactor_ms_196",
-        "reactor_ms_1308",
+        "test_stage_one",
+        "test_stage_two",
     ]
-    assert stages[0]["Q_liquid_mL_min"] == pytest.approx(0.15)
-    assert stages[1]["Q_liquid_mL_min"] == pytest.approx(0.20)
-    assert stages[0]["residence_time_min"] == pytest.approx(1.96 / 0.15, rel=1e-4)
-    assert stages[1]["residence_time_min"] == pytest.approx(13.08 / 0.20, rel=1e-4)
+    assert stages[0]["Q_liquid_mL_min"] == pytest.approx(0.12)
+    assert stages[1]["Q_liquid_mL_min"] == pytest.approx(0.16)
+    assert stages[0]["residence_time_min"] == pytest.approx(2.4 / 0.12, rel=1e-4)
+    assert stages[1]["residence_time_min"] == pytest.approx(9.6 / 0.16, rel=1e-4)
     assert any(item["decision"] == "repair_stage_feed_map" for item in report["decisions"])
 
 
@@ -204,30 +204,30 @@ def test_hydrogen_peroxide_name_does_not_require_hydrogen_hardware():
     proposal = FlowProposal(
         residence_time_min=180,
         flow_rate_mL_min=0.07,
-        temperature_C=80,
-        concentration_M=0.667,
+        temperature_C=74,
+        concentration_M=0.3,
         BPR_bar=0,
         streams=[
-            StreamAssignment(stream_label="A", contents=["Benzyl alcohol"], concentration_M=0.667),
-            StreamAssignment(stream_label="B", contents=["Hydrogen peroxide"], concentration_M=0.667),
-            StreamAssignment(stream_label="C", contents=["Morpholine", "TBHP"], concentration_M=0.667),
+            StreamAssignment(stream_label="A", contents=["alcohol A"], concentration_M=0.3),
+            StreamAssignment(stream_label="B", contents=["Hydrogen peroxide"], concentration_M=0.3),
+            StreamAssignment(stream_label="C", contents=["amine B", "organic peroxide"], concentration_M=0.3),
         ],
     )
     plan = ChemistryPlan(
         n_stages=2,
         stream_logic=[
-            StreamLogic(stream_label="A", reagents=["Benzyl alcohol"], concentration_M=0.667),
+            StreamLogic(stream_label="A", reagents=["alcohol A"], concentration_M=0.3),
             StreamLogic(
                 stream_label="B",
                 reagents=["Hydrogen peroxide"],
                 molar_equiv=2,
-                concentration_M=0.667,
+                concentration_M=0.3,
             ),
-            StreamLogic(stream_label="C", reagents=["Morpholine", "TBHP"], concentration_M=0.667),
+            StreamLogic(stream_label="C", reagents=["amine B", "organic peroxide"], concentration_M=0.3),
         ],
         stages=[
-            ProcessStage(stage_number=1, stage_name="Oxidation", temperature_C=70),
-            ProcessStage(stage_number=2, stage_name="Amidation", temperature_C=80),
+            ProcessStage(stage_number=1, stage_name="Oxidation", temperature_C=62),
+            ProcessStage(stage_number=2, stage_name="Amidation", temperature_C=74),
         ],
     )
 
@@ -286,7 +286,7 @@ def test_global_stream_logic_quantities_override_incomplete_stage_summaries():
         streams=[
             StreamAssignment(
                 stream_label="A",
-                contents=["N-alkyl xylidine"],
+                contents=["anisole"],
                 concentration_M=1.45,
             ),
             StreamAssignment(
@@ -302,7 +302,7 @@ def test_global_stream_logic_quantities_override_incomplete_stage_summaries():
         stream_logic=[
             StreamLogic(
                 stream_label="A",
-                reagents=["N-alkyl xylidine"],
+                reagents=["anisole"],
                 concentration_M=1.45,
                 molar_equiv=1.0,
             ),
@@ -317,7 +317,7 @@ def test_global_stream_logic_quantities_override_incomplete_stage_summaries():
             ProcessStage(
                 stage_number=1,
                 feed_streams=[
-                    StreamLogic(stream_label="A", reagents=["N-alkyl xylidine"]),
+                    StreamLogic(stream_label="A", reagents=["anisole"]),
                     StreamLogic(stream_label="B", reagents=["aqueous nitric acid"]),
                 ],
             )
@@ -331,7 +331,7 @@ def test_global_stream_logic_quantities_override_incomplete_stage_summaries():
     assert acid.concentration_basis == "chemistry_plan"
     assert acid.molar_equiv == 2.2
     assert acid.molar_equiv_basis == "chemistry_plan"
-    assert acid.flow_rate_mL_min >= 0.5
+    assert acid.flow_rate_mL_min >= 0.2
     assert report["status"] == "complete"
 
 
@@ -341,14 +341,14 @@ def test_air_identity_binds_air_mfc_and_uses_liquid_contact_time():
     proposal = FlowProposal(
         flow_rate_mL_min=0.2,
         concentration_M=0.1,
-        temperature_C=21,
+        temperature_C=29,
         BPR_bar=3,
         reactor_type="photochemical coil",
         reactor_volume_mL=1,
         streams=[
             StreamAssignment(
                 stream_label="A",
-                contents=["Fmoc-L-methionine", "photocatalyst"],
+                contents=["thioanisole", "photocatalyst"],
                 solvent="acetonitrile",
                 concentration_M=0.1,
             ),
@@ -364,7 +364,7 @@ def test_air_identity_binds_air_mfc_and_uses_liquid_contact_time():
     plan = ChemistryPlan(
         reaction_name="Aerobic photooxidation",
         stream_logic=[
-            StreamLogic(stream_label="A", reagents=["Fmoc-L-methionine"], concentration_M=0.1),
+            StreamLogic(stream_label="A", reagents=["thioanisole"], concentration_M=0.1),
             StreamLogic(stream_label="B", reagents=["air"], phase="gas", molar_equiv=2.0),
         ],
     )
@@ -378,11 +378,11 @@ def test_air_identity_binds_air_mfc_and_uses_liquid_contact_time():
     )
 
     gas = next(item for item in realized.streams if item.phase == "gas")
-    assert gas.pump_equipment_id == "mfc_air_10"
+    assert gas.pump_equipment_id == "test_air_mfc"
     assert gas.contents == ["air"]
     assert validation["checks"]["pump_flow_feasible"]
     assert report["status"] == "complete"
-    assert realized.pressure_absolute_bar == pytest.approx(4.01325)
+    assert realized.pressure_absolute_bar == pytest.approx(5.01325)
     assert realized.residence_time_min == pytest.approx(
         realized.reactor_volume_mL
         / realized.flow_rate_mL_min
@@ -401,14 +401,14 @@ def test_air_to_inventory_o2_substitution_recomputes_on_pure_gas_basis():
     proposal = FlowProposal(
         flow_rate_mL_min=0.2,
         concentration_M=0.1,
-        temperature_C=21,
+        temperature_C=29,
         BPR_bar=3,
         reactor_type="photochemical coil",
         reactor_volume_mL=1,
         streams=[
             StreamAssignment(
                 stream_label="A",
-                contents=["Fmoc-L-methionine", "photocatalyst"],
+                contents=["thioanisole", "photocatalyst"],
                 solvent="acetonitrile",
                 concentration_M=0.1,
             ),
@@ -425,7 +425,7 @@ def test_air_to_inventory_o2_substitution_recomputes_on_pure_gas_basis():
     )
     plan = ChemistryPlan(
         stream_logic=[
-            StreamLogic(stream_label="A", reagents=["Fmoc-L-methionine"], concentration_M=0.1),
+            StreamLogic(stream_label="A", reagents=["thioanisole"], concentration_M=0.1),
             StreamLogic(
                 stream_label="G",
                 reagents=["air"],
@@ -471,14 +471,14 @@ def test_protocol_air_collapses_duplicate_air_and_pure_oxygen_feeds():
     proposal = FlowProposal(
         flow_rate_mL_min=0.2,
         concentration_M=0.1,
-        temperature_C=21,
+        temperature_C=29,
         BPR_bar=3,
         reactor_type="photochemical coil",
         reactor_volume_mL=1,
         streams=[
             StreamAssignment(
                 stream_label="A",
-                contents=["Fmoc-L-methionine", "photocatalyst"],
+                contents=["thioanisole", "photocatalyst"],
                 solvent="acetonitrile",
                 concentration_M=0.1,
             ),
@@ -502,7 +502,7 @@ def test_protocol_air_collapses_duplicate_air_and_pure_oxygen_feeds():
         reaction_name="Aerobic photooxidation",
         o2_is_reagent=True,
         stream_logic=[
-            StreamLogic(stream_label="A", reagents=["Fmoc-L-methionine"], concentration_M=0.1),
+            StreamLogic(stream_label="A", reagents=["thioanisole"], concentration_M=0.1),
             StreamLogic(stream_label="B", reagents=["air"], phase="gas", molar_equiv=1.0),
             StreamLogic(stream_label="G", reagents=["O2"], phase="gas", molar_equiv=1.0),
         ],
@@ -519,7 +519,7 @@ def test_protocol_air_collapses_duplicate_air_and_pure_oxygen_feeds():
     gas_streams = [stream for stream in realized.streams if stream.phase == "gas"]
     assert len(gas_streams) == 1
     assert gas_streams[0].contents == ["air"]
-    assert gas_streams[0].pump_equipment_id == "mfc_air_10"
+    assert gas_streams[0].pump_equipment_id == "test_air_mfc"
     assert realized.multiphase_metrics["gas_species"] == "air"
     assert len(realized.multiphase_metrics["gas_streams"]) == 1
     assert validation["status"] == "ready"
@@ -535,13 +535,13 @@ def test_gas_mfc_max_is_solved_jointly_with_liquid_flow():
     proposal = FlowProposal(
         flow_rate_mL_min=1.0,
         concentration_M=0.1,
-        temperature_C=21,
+        temperature_C=29,
         BPR_bar=3,
         reactor_type="photochemical coil",
         streams=[
             StreamAssignment(
                 stream_label="A",
-                contents=["Fmoc-L-methionine"],
+                contents=["thioanisole"],
                 concentration_M=0.1,
             ),
             StreamAssignment(
@@ -554,7 +554,7 @@ def test_gas_mfc_max_is_solved_jointly_with_liquid_flow():
     )
     plan = ChemistryPlan(
         stream_logic=[
-            StreamLogic(stream_label="A", reagents=["Fmoc-L-methionine"], concentration_M=0.1),
+            StreamLogic(stream_label="A", reagents=["thioanisole"], concentration_M=0.1),
             StreamLogic(stream_label="G", reagents=["air"], phase="gas", molar_equiv=1.0),
         ]
     )
@@ -569,7 +569,7 @@ def test_gas_mfc_max_is_solved_jointly_with_liquid_flow():
 
     gas = next(item for item in realized.streams if item.phase == "gas")
     assert validation["status"] == "ready"
-    assert gas.gas_flow_sccm == 10.0
+    assert gas.gas_flow_sccm == 6.0
     assert realized.flow_rate_mL_min < 1.0
     assert gas.molar_equiv == pytest.approx(1.0, abs=1e-3)
     assert any(
@@ -629,17 +629,17 @@ def test_packed_bed_single_feed_uses_exact_cartridge_and_pressure_setpoint():
     proposal = FlowProposal(
         residence_time_min=3,
         flow_rate_mL_min=0.1,
-        temperature_C=150,
-        concentration_M=0.25,
+        temperature_C=110,
+        concentration_M=0.3,
         BPR_bar=12,
         reactor_type="packed-bed",
         streams=[
             StreamAssignment(
                 stream_label="A",
                 pump_role="premixed CuAAC feed",
-                contents=["Benzyl azide", "Phenylacetylene", "Acetone"],
+                contents=["azide A", "alkyne B", "Acetone"],
                 solvent="Acetone",
-                concentration_M=0.25,
+                concentration_M=0.3,
             )
         ],
     )
@@ -648,8 +648,8 @@ def test_packed_bed_single_feed_uses_exact_cartridge_and_pressure_setpoint():
         stream_logic=[
             StreamLogic(
                 stream_label="A",
-                reagents=["Benzyl azide", "Phenylacetylene", "Acetone"],
-                concentration_M=0.25,
+                reagents=["azide A", "alkyne B", "Acetone"],
+                concentration_M=0.3,
             )
         ],
     )
@@ -657,10 +657,10 @@ def test_packed_bed_single_feed_uses_exact_cartridge_and_pressure_setpoint():
     realized, _, validation = _realize("cuaac", proposal, plan)
 
     assert validation["status"] == "ready"
-    assert realized.inventory_selection["equipment_id"] == "reactor_cuc_cart_030"
-    assert realized.streams[0].pump_equipment_id == "pump_xcube_hplc"
-    assert realized.BPR_bar == 20
-    assert realized.reactor_volume_mL == 0.3
+    assert realized.inventory_selection["equipment_id"] == "test_copper_cartridge"
+    assert realized.streams[0].pump_equipment_id == "test_cartridge_pump"
+    assert realized.BPR_bar == 15
+    assert realized.reactor_volume_mL == 0.6
     assert realized.residence_time_min == pytest.approx(
         realized.reactor_volume_mL / realized.flow_rate_mL_min, rel=1e-5
     )
@@ -672,13 +672,13 @@ def test_packed_bed_catalyst_and_negated_deoxygenation_compile_without_false_blo
     batch = BatchRecord(raw_text=case["protocol"], reaction_description=case["protocol"])
     catalyst_text = (
         "Cu/C heterogeneous catalyst (10 mol% Cu, pre-packed in "
-        "reactor_cuc_cart_030 - not in solution)"
+        "test_copper_cartridge - not in solution)"
     )
     proposal = FlowProposal(
         residence_time_min=2.8,
         flow_rate_mL_min=0.1,
-        temperature_C=150,
-        concentration_M=0.25,
+        temperature_C=110,
+        concentration_M=0.3,
         BPR_bar=20,
         reactor_type="packed-bed",
         deoxygenation_method=(
@@ -689,12 +689,12 @@ def test_packed_bed_catalyst_and_negated_deoxygenation_compile_without_false_blo
                 stream_label="A",
                 pump_role="premixed CuAAC feed",
                 contents=[
-                    "Benzyl azide (0.25 M, 1.0 equiv)",
-                    "Phenylacetylene (0.275 M, 1.1 equiv)",
+                    "azide A (0.3 M, 1.0 equiv)",
+                    "alkyne B (0.33 M, 1.1 equiv)",
                     catalyst_text,
                 ],
                 solvent="Acetone",
-                concentration_M=0.25,
+                concentration_M=0.3,
             )
         ],
     )
@@ -712,11 +712,11 @@ def test_packed_bed_catalyst_and_negated_deoxygenation_compile_without_false_blo
             StreamLogic(
                 stream_label="A",
                 reagents=[
-                    "Benzyl azide (0.25 M, 1.0 equiv)",
-                    "Phenylacetylene (0.275 M, 1.1 equiv)",
+                    "azide A (0.3 M, 1.0 equiv)",
+                    "alkyne B (0.33 M, 1.1 equiv)",
                     catalyst_text,
                 ],
-                concentration_M=0.25,
+                concentration_M=0.3,
             )
         ],
     )
@@ -762,8 +762,8 @@ def test_packed_bed_removes_stationary_catalyst_with_variable_role_wording(role)
     proposal = FlowProposal(
         residence_time_min=3.0,
         flow_rate_mL_min=0.1,
-        temperature_C=150,
-        concentration_M=0.25,
+        temperature_C=110,
+        concentration_M=0.3,
         BPR_bar=20,
         reactor_type="packed-bed",
         streams=[
@@ -771,12 +771,12 @@ def test_packed_bed_removes_stationary_catalyst_with_variable_role_wording(role)
                 stream_label="A",
                 pump_role="premixed CuAAC feed",
                 contents=[
-                    "benzyl azide (0.25 M, 1.0 equiv)",
-                    "phenylacetylene (0.275 M, 1.1 equiv)",
+                    "azide A (0.3 M, 1.0 equiv)",
+                    "alkyne B (0.33 M, 1.1 equiv)",
                     "copper on carbon (0.025 M screening assumption)",
                 ],
                 solvent="acetone",
-                concentration_M=0.25,
+                concentration_M=0.3,
             )
         ],
     )
@@ -812,29 +812,29 @@ def test_packed_bed_removes_stationary_catalyst_with_variable_role_wording(role)
 
 def test_connected_photo_sequence_resolves_pressure_pump_gas_lights_and_stages():
     profile = inventory_profile_from_payload(
-        json.loads((FIXTURES / "connected_photochemistry_inventory.json").read_text())
+        json.loads((FIXTURES / "synthetic_connected_inventory.json").read_text())
     )
     protocol = (
-        "Photoredox Giese addition at 25 C for 4 h under argon, followed by "
-        "aerobic oxidation at 25 C for 6 h. Use 452 nm light. The catalyst is "
-        "Ir(dF(CF3)ppy)2(dtbpy)PF6 at 0.5 mol%."
+        "Synthetic fixture: substrate P and alkene Q undergo a light-driven step "
+        "at 34 C under argon, then an aerobic transformation at 44 C. "
+        "Use 455 nm light and organic photocatalyst PC at 0.4 mol%. No outcomes are provided."
     )
     proposal = FlowProposal(
         residence_time_min=25,
         flow_rate_mL_min=0.4,
-        temperature_C=25,
+        temperature_C=34,
         concentration_M=0.1,
         BPR_bar=2.5,
         reactor_volume_mL=20,
-        wavelength_nm=452,
+        wavelength_nm=455,
         streams=[
             StreamAssignment(
                 stream_label="A",
                 pump_role="Substrate and photocatalyst feed",
                 contents=[
-                    "PMPSCH2TMS (1.0 equiv)",
-                    "Acrylonitrile (2.0 equiv)",
-                    "Ir(dF(CF3)ppy)2(dtbpy)PF6 (0.5 mol%)",
+                    "substrate P (1.0 equiv)",
+                    "alkene Q (2.0 equiv)",
+                    "organic photocatalyst PC (0.4 mol%)",
                 ],
                 concentration_M=0.1,
                 introduction_stage=1,
@@ -855,9 +855,9 @@ def test_connected_photo_sequence_resolves_pressure_pump_gas_lights_and_stages()
             StreamLogic(
                 stream_label="A",
                 reagents=[
-                    "PMPSCH2TMS (1.0 equiv)",
-                    "Acrylonitrile (2.0 equiv)",
-                    "Ir(dF(CF3)ppy)2(dtbpy)PF6 (0.5 mol%)",
+                    "substrate P (1.0 equiv)",
+                    "alkene Q (2.0 equiv)",
+                    "organic photocatalyst PC (0.4 mol%)",
                 ],
                 concentration_M=0.1,
                 introduction_stage=1,
@@ -873,16 +873,16 @@ def test_connected_photo_sequence_resolves_pressure_pump_gas_lights_and_stages()
         stages=[
             ProcessStage(
                 stage_number=1,
-                stage_name="Giese radical addition",
+                stage_name="Synthetic light-driven transformation",
                 reaction_type="photoredox catalysis",
-                temperature_C=25,
+                temperature_C=34,
                 requires_light=True,
-                wavelength_nm=452,
-                batch_time_h=4,
+                wavelength_nm=455,
+                batch_time_h=2,
                 feed_streams=[
                     StreamLogic(
                         stream_label="A",
-                        reagents=["PMPSCH2TMS", "acrylonitrile", "photocatalyst"],
+                        reagents=["substrate P", "alkene Q", "photocatalyst"],
                         introduction_stage=1,
                     )
                 ],
@@ -891,10 +891,10 @@ def test_connected_photo_sequence_resolves_pressure_pump_gas_lights_and_stages()
                 stage_number=2,
                 stage_name="Aerobic oxidation",
                 reaction_type="oxidation",
-                temperature_C=40,
+                temperature_C=44,
                 requires_light=True,
-                wavelength_nm=452,
-                batch_time_h=6,
+                wavelength_nm=455,
+                batch_time_h=3,
                 feed_streams=[
                     StreamLogic(
                         stream_label="B",
@@ -919,17 +919,17 @@ def test_connected_photo_sequence_resolves_pressure_pump_gas_lights_and_stages()
     liquid, gas = realized.streams
     assert report["status"] == "complete"
     assert validation["status"] == "ready"
-    assert realized.BPR_bar == 7.0
-    assert liquid.pump_equipment_id == "EXAMPLE-PUMP-HAMILTON-PSD4"
-    assert gas.pump_equipment_id == "EXAMPLE-GAS-MFC-O2-BRONKHORST"
+    assert realized.BPR_bar == 4.0
+    assert liquid.pump_equipment_id == "test_dual_stage_pump"
+    assert gas.pump_equipment_id == "test_oxygen_mfc"
     assert gas.contents == ["O2"]
-    assert gas.gas_flow_sccm < 2.0
+    assert gas.gas_flow_sccm <= 3.0
     assert gas.gas_flow_actual_mL_min == pytest.approx(
-        actual_gas_flow_from_stp(gas.gas_flow_sccm, 40.0, 7.0), rel=1e-5
+        actual_gas_flow_from_stp(gas.gas_flow_sccm, 44.0, 4.0), rel=1e-5
     )
     assert [stage["light_equipment_id"] for stage in realized.stage_parameters] == [
-        "EXAMPLE-LIGHT-UV150-450",
-        "EXAMPLE-LIGHT-MANUAL-BLUE-448",
+        "test_blue_light_one",
+        "test_blue_light_two",
     ]
     assert len({stage["reactor_equipment_id"] for stage in realized.stage_parameters}) == 2
     assert realized.residence_time_min == pytest.approx(
@@ -941,6 +941,6 @@ def test_connected_photo_sequence_resolves_pressure_pump_gas_lights_and_stages()
     assert not report["safety_contract"]["hazards"]
     assert not any(
         item["decision"] == "component_quantity_screening_assumption"
-        and item.get("component", "").startswith("Ir(")
+        and item.get("component", "").startswith("organic photocatalyst PC")
         for item in report["decisions"]
     )

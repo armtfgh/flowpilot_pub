@@ -7,7 +7,7 @@ test("scientific policy is explicit, persists, and sends twelve candidates", asy
   test.skip(!response.ok(), "Saved DPDTC intake needed");
   const source = await response.json();
   await page.goto("/");
-  await page.evaluate((intake) => sessionStorage.setItem("flowpilot_workspace_v1", JSON.stringify({
+  await page.evaluate((intake) => sessionStorage.setItem("flowpilot_publication_workspace_v1", JSON.stringify({
     protocol: intake.raw_protocol, intakePackage: intake, selectedProfile: intake.inventory_profile_snapshot,
     upstreamModelId: "claude-opus-4-6", downstreamModelId: "claude-sonnet-4-6", designPolicy: "legacy"
   })), source.intake_package);
@@ -41,7 +41,7 @@ test("scientific result shows full review coverage, final stages, and icon topol
   page.on("pageerror", err => errors.push(err.message));
   await page.goto(`/?run=${run}`);
   await expect(page.getByRole("heading", {name: "Scientific assessment"})).toBeVisible();
-  await expect.poll(() => page.evaluate(() => JSON.parse(sessionStorage.getItem("flowpilot_workspace_v1") || "{}").designPolicy)).toBe("scientific_v2");
+  await expect.poll(() => page.evaluate(() => JSON.parse(sessionStorage.getItem("flowpilot_publication_workspace_v1") || "{}").designPolicy)).toBe("scientific_v2");
   await expect(page.getByText("Experimental screen, not a validated high-yield process.", {exact:false})).toBeVisible();
   if (result.scientific_assessment.source_context?.gas_delivery?.requires_chemist_confirmation) {
     await expect(page.locator(".gasChangeWarning")).toBeVisible();

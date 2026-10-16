@@ -11,7 +11,7 @@ def _package():
             "temperature_C": 40,
         },
         objective="next longer screening design",
-        historical_data="Measured evidence: KRICT gave 10-12% product at 34-38 min.",
+        historical_data="Synthetic feedback for parser testing: example runs gave 15-25% product at 20-30 min.",
         inventory_constraints={"reactors": [{"volume_mL": 10, "ID_mm": 1.0}]},
         hypotheses=["oxygen mass transfer may be limiting"],
         operating_limits="max pressure 8 bar",
@@ -38,6 +38,6 @@ def test_translation_prompt_includes_authority_labeled_intake_context():
 
     assert "FlowPilot Intake Context - authority labeled" in user_prompt
     assert "measured evidence > hard constraints > protocol facts" in user_prompt
-    assert "KRICT gave 10-12% product" in user_prompt
+    assert "example runs gave 15-25% product" in user_prompt
     assert "oxygen mass transfer may be limiting" in user_prompt
     assert "Measured evidence in the intake context overrides" in user_prompt

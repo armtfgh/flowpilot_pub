@@ -1,0 +1,655 @@
+{
+  "nitration": {
+    "protocol": "Synthetic software test only. An aromatic substrate feed and an aqueous nitric acid feed enter a temperature-controlled nitration microchannel. No experimental outcome is supplied.",
+    "inventory": {
+      "schema_version": "flowpilot_lab_inventory_v3.0",
+      "strict_assignment": true,
+      "pumps": [
+        {
+          "equipment_id": "test_acid_feed_a",
+          "name": "Synthetic test_acid_feed_a",
+          "type": "syringe",
+          "min_flow_rate_mL_min": 0.2,
+          "max_flow_rate_mL_min": 4,
+          "max_pressure_bar": 25,
+          "compatible_materials": [
+            "anisole",
+            "acetonitrile"
+          ]
+        },
+        {
+          "equipment_id": "test_acid_feed_b",
+          "name": "Synthetic test_acid_feed_b",
+          "type": "syringe",
+          "min_flow_rate_mL_min": 0.2,
+          "max_flow_rate_mL_min": 4,
+          "max_pressure_bar": 25,
+          "compatible_materials": [
+            "aqueous nitric acid"
+          ]
+        }
+      ],
+      "reactors": [
+        {
+          "equipment_id": "test_acid_channel",
+          "name": "Synthetic test_acid_channel",
+          "type": "microchannel",
+          "material": "PTFE",
+          "volume_mL": 0.4,
+          "ID_mm": 0.7,
+          "min_temperature_C": 10,
+          "max_temperature_C": 140,
+          "max_pressure_bar": 25
+        }
+      ],
+      "tubing": [
+        {
+          "equipment_id": "synthetic_tube_0",
+          "material": "PTFE",
+          "ID_mm": 0.7,
+          "max_pressure_bar": 25,
+          "max_temperature_C": 140,
+          "transparent": true
+        }
+      ],
+      "BPR_available": [],
+      "gas_hardware": [],
+      "light_sources": [],
+      "mixers": [
+        {
+          "equipment_id": "synthetic_mixer_0",
+          "name": "Synthetic T junction",
+          "type": "T-mixer",
+          "material": "PFA",
+          "quantity": 1,
+          "max_inputs": 3,
+          "max_pressure_bar": 25
+        }
+      ],
+      "temperature_controllers": [
+        {
+          "equipment_id": "synthetic_thermal",
+          "name": "Synthetic thermal enclosure",
+          "type": "heater_chiller",
+          "quantity": 1,
+          "min_temperature_C": 10,
+          "max_temperature_C": 140
+        }
+      ],
+      "connectors": [
+        {
+          "equipment_id": "synthetic_connectors",
+          "name": "Synthetic unions",
+          "type": "union",
+          "quantity": 10,
+          "material": "PFA",
+          "max_pressure_bar": 25
+        }
+      ],
+      "collectors": [
+        {
+          "equipment_id": "synthetic_collector",
+          "name": "Synthetic cooled quench receiver",
+          "type": "quench collector",
+          "volume_mL": 80,
+          "max_pressure_bar": 1
+        }
+      ],
+      "separators": [
+        {
+          "equipment_id": "synthetic_separator",
+          "name": "Synthetic vented separator",
+          "type": "gas-liquid separator",
+          "supported_phases": [
+            "gas",
+            "liquid"
+          ],
+          "max_pressure_bar": 25,
+          "max_flow_mL_min": 8
+        }
+      ],
+      "standard_reactor_connectors_available": true
+    },
+    "hard_constraints": [
+      "Use the two declared pumps and the declared cooled quench receiver."
+    ],
+    "synthetic_fixture": true
+  },
+  "hydrogenolysis": {
+    "protocol": "Synthetic software test only. Substrate H in methanol is contacted with hydrogen in a supported-catalyst bed at 55 C. Nitrogen is available for purging. No conversion or yield is known.",
+    "inventory": {
+      "schema_version": "flowpilot_lab_inventory_v3.0",
+      "strict_assignment": true,
+      "pumps": [
+        {
+          "equipment_id": "test_hydrogen_pump",
+          "name": "Synthetic test_hydrogen_pump",
+          "type": "syringe",
+          "min_flow_rate_mL_min": 0.12,
+          "max_flow_rate_mL_min": 2,
+          "max_pressure_bar": 25,
+          "compatible_materials": []
+        }
+      ],
+      "reactors": [
+        {
+          "equipment_id": "test_hydrogen_bed",
+          "name": "Synthetic test_hydrogen_bed",
+          "type": "packed-bed",
+          "material": "stainless steel",
+          "volume_mL": 4.2,
+          "ID_mm": 2,
+          "min_temperature_C": 10,
+          "max_temperature_C": 140,
+          "max_pressure_bar": 25,
+          "allowed_temperatures_C": [
+            55
+          ]
+        }
+      ],
+      "tubing": [
+        {
+          "equipment_id": "synthetic_tube_0",
+          "material": "stainless steel",
+          "ID_mm": 2,
+          "max_pressure_bar": 25,
+          "max_temperature_C": 140,
+          "transparent": false
+        }
+      ],
+      "BPR_available": [
+        12
+      ],
+      "gas_hardware": [
+        {
+          "equipment_id": "test_hydrogen_mfc",
+          "name": "Synthetic H2 controller",
+          "type": "MFC",
+          "gas": "H2",
+          "min_flow_sccm": 0.2,
+          "max_flow_sccm": 60,
+          "max_pressure_bar": 25
+        },
+        {
+          "equipment_id": "test_nitrogen_supply",
+          "name": "Synthetic nitrogen supply",
+          "type": "gas_supply",
+          "gas": "N2",
+          "max_pressure_bar": 25
+        }
+      ],
+      "light_sources": [],
+      "mixers": [
+        {
+          "equipment_id": "synthetic_mixer_0",
+          "name": "Synthetic T junction",
+          "type": "T-mixer",
+          "material": "PFA",
+          "quantity": 1,
+          "max_inputs": 3,
+          "max_pressure_bar": 25
+        }
+      ],
+      "temperature_controllers": [
+        {
+          "equipment_id": "synthetic_thermal",
+          "name": "Synthetic thermal enclosure",
+          "type": "heater_chiller",
+          "quantity": 1,
+          "min_temperature_C": 10,
+          "max_temperature_C": 140
+        }
+      ],
+      "connectors": [
+        {
+          "equipment_id": "synthetic_connectors",
+          "name": "Synthetic unions",
+          "type": "union",
+          "quantity": 10,
+          "material": "PFA",
+          "max_pressure_bar": 25
+        }
+      ],
+      "collectors": [
+        {
+          "equipment_id": "synthetic_collector",
+          "name": "Synthetic cooled quench receiver",
+          "type": "quench collector",
+          "volume_mL": 80,
+          "max_pressure_bar": 1
+        }
+      ],
+      "separators": [
+        {
+          "equipment_id": "synthetic_separator",
+          "name": "Synthetic vented separator",
+          "type": "gas-liquid separator",
+          "supported_phases": [
+            "gas",
+            "liquid"
+          ],
+          "max_pressure_bar": 25,
+          "max_flow_mL_min": 8
+        }
+      ],
+      "standard_reactor_connectors_available": true,
+      "pressure_controllers": [
+        {
+          "equipment_id": "synthetic_bpr",
+          "name": "Synthetic fixed regulator",
+          "type": "BPR",
+          "setpoints_bar": [
+            12
+          ],
+          "min_pressure_bar": 12,
+          "max_pressure_bar": 12
+        }
+      ]
+    },
+    "hard_constraints": [
+      "Use the declared 12 bar regulator. Use nominal empty-bed liquid space time."
+    ],
+    "synthetic_fixture": true
+  },
+  "multistep": {
+    "protocol": "Synthetic software test only. Feed alcohol A and aqueous hydrogen peroxide to Stage 1 at 62 C. Add amine B with organic peroxide at Stage 2 at 74 C. No measured performance is provided.",
+    "inventory": {
+      "schema_version": "flowpilot_lab_inventory_v3.0",
+      "strict_assignment": true,
+      "pumps": [
+        {
+          "equipment_id": "test_stage_feed_a",
+          "name": "Synthetic test_stage_feed_a",
+          "type": "syringe",
+          "min_flow_rate_mL_min": 0.04,
+          "max_flow_rate_mL_min": 3,
+          "max_pressure_bar": 25,
+          "compatible_materials": []
+        },
+        {
+          "equipment_id": "test_stage_feed_b",
+          "name": "Synthetic test_stage_feed_b",
+          "type": "syringe",
+          "min_flow_rate_mL_min": 0.04,
+          "max_flow_rate_mL_min": 3,
+          "max_pressure_bar": 25,
+          "compatible_materials": []
+        },
+        {
+          "equipment_id": "test_stage_feed_c",
+          "name": "Synthetic test_stage_feed_c",
+          "type": "syringe",
+          "min_flow_rate_mL_min": 0.04,
+          "max_flow_rate_mL_min": 3,
+          "max_pressure_bar": 25,
+          "compatible_materials": []
+        }
+      ],
+      "reactors": [
+        {
+          "equipment_id": "test_stage_one",
+          "name": "Synthetic test_stage_one",
+          "type": "coil",
+          "material": "PFA",
+          "volume_mL": 2.4,
+          "ID_mm": 0.9,
+          "min_temperature_C": 10,
+          "max_temperature_C": 140,
+          "max_pressure_bar": 25,
+          "allowed_temperatures_C": [
+            62
+          ]
+        },
+        {
+          "equipment_id": "test_stage_two",
+          "name": "Synthetic test_stage_two",
+          "type": "coil",
+          "material": "PFA",
+          "volume_mL": 9.6,
+          "ID_mm": 0.9,
+          "min_temperature_C": 10,
+          "max_temperature_C": 140,
+          "max_pressure_bar": 25,
+          "allowed_temperatures_C": [
+            74
+          ]
+        }
+      ],
+      "tubing": [
+        {
+          "equipment_id": "synthetic_tube_0",
+          "material": "PFA",
+          "ID_mm": 0.9,
+          "max_pressure_bar": 25,
+          "max_temperature_C": 140,
+          "transparent": true
+        }
+      ],
+      "BPR_available": [],
+      "gas_hardware": [],
+      "light_sources": [],
+      "mixers": [
+        {
+          "equipment_id": "synthetic_mixer_0",
+          "name": "Synthetic T junction",
+          "type": "T-mixer",
+          "material": "PFA",
+          "quantity": 1,
+          "max_inputs": 3,
+          "max_pressure_bar": 25
+        },
+        {
+          "equipment_id": "synthetic_mixer_1",
+          "name": "Synthetic T junction",
+          "type": "T-mixer",
+          "material": "PFA",
+          "quantity": 1,
+          "max_inputs": 3,
+          "max_pressure_bar": 25
+        }
+      ],
+      "temperature_controllers": [
+        {
+          "equipment_id": "synthetic_thermal",
+          "name": "Synthetic thermal enclosure",
+          "type": "heater_chiller",
+          "quantity": 2,
+          "min_temperature_C": 10,
+          "max_temperature_C": 140
+        }
+      ],
+      "connectors": [
+        {
+          "equipment_id": "synthetic_connectors",
+          "name": "Synthetic unions",
+          "type": "union",
+          "quantity": 10,
+          "material": "PFA",
+          "max_pressure_bar": 25
+        }
+      ],
+      "collectors": [
+        {
+          "equipment_id": "synthetic_collector",
+          "name": "Synthetic cooled quench receiver",
+          "type": "quench collector",
+          "volume_mL": 80,
+          "max_pressure_bar": 1
+        }
+      ],
+      "separators": [
+        {
+          "equipment_id": "synthetic_separator",
+          "name": "Synthetic vented separator",
+          "type": "gas-liquid separator",
+          "supported_phases": [
+            "gas",
+            "liquid"
+          ],
+          "max_pressure_bar": 25,
+          "max_flow_mL_min": 8
+        }
+      ],
+      "standard_reactor_connectors_available": true
+    },
+    "hard_constraints": [
+      "The three feeds enter only their assigned stages."
+    ],
+    "synthetic_fixture": true
+  },
+  "cuaac": {
+    "protocol": "Synthetic software test only. A liquid solution of azide A and alkyne B in acetone passes through a copper-on-carbon catalyst cartridge at 110 C. The catalyst is stationary. No measured conversion is provided.",
+    "inventory": {
+      "schema_version": "flowpilot_lab_inventory_v3.0",
+      "strict_assignment": true,
+      "pumps": [
+        {
+          "equipment_id": "test_cartridge_pump",
+          "name": "Synthetic test_cartridge_pump",
+          "type": "syringe",
+          "min_flow_rate_mL_min": 0.08,
+          "max_flow_rate_mL_min": 2,
+          "max_pressure_bar": 25,
+          "compatible_materials": []
+        }
+      ],
+      "reactors": [
+        {
+          "equipment_id": "test_copper_cartridge",
+          "name": "Synthetic test_copper_cartridge",
+          "type": "packed-bed",
+          "material": "stainless steel",
+          "volume_mL": 0.6,
+          "ID_mm": 1.6,
+          "min_temperature_C": 10,
+          "max_temperature_C": 140,
+          "max_pressure_bar": 25,
+          "allowed_temperatures_C": [
+            110
+          ]
+        }
+      ],
+      "tubing": [
+        {
+          "equipment_id": "synthetic_tube_0",
+          "material": "stainless steel",
+          "ID_mm": 1.6,
+          "max_pressure_bar": 25,
+          "max_temperature_C": 140,
+          "transparent": false
+        }
+      ],
+      "BPR_available": [
+        15
+      ],
+      "gas_hardware": [],
+      "light_sources": [],
+      "mixers": [
+        {
+          "equipment_id": "synthetic_mixer_0",
+          "name": "Synthetic T junction",
+          "type": "T-mixer",
+          "material": "PFA",
+          "quantity": 1,
+          "max_inputs": 3,
+          "max_pressure_bar": 25
+        }
+      ],
+      "temperature_controllers": [
+        {
+          "equipment_id": "synthetic_thermal",
+          "name": "Synthetic thermal enclosure",
+          "type": "heater_chiller",
+          "quantity": 1,
+          "min_temperature_C": 10,
+          "max_temperature_C": 140
+        }
+      ],
+      "connectors": [
+        {
+          "equipment_id": "synthetic_connectors",
+          "name": "Synthetic unions",
+          "type": "union",
+          "quantity": 10,
+          "material": "PFA",
+          "max_pressure_bar": 25
+        }
+      ],
+      "collectors": [
+        {
+          "equipment_id": "synthetic_collector",
+          "name": "Synthetic cooled quench receiver",
+          "type": "quench collector",
+          "volume_mL": 80,
+          "max_pressure_bar": 1
+        }
+      ],
+      "separators": [
+        {
+          "equipment_id": "synthetic_separator",
+          "name": "Synthetic vented separator",
+          "type": "gas-liquid separator",
+          "supported_phases": [
+            "gas",
+            "liquid"
+          ],
+          "max_pressure_bar": 25,
+          "max_flow_mL_min": 8
+        }
+      ],
+      "standard_reactor_connectors_available": true,
+      "pressure_controllers": [
+        {
+          "equipment_id": "synthetic_bpr",
+          "name": "Synthetic fixed regulator",
+          "type": "BPR",
+          "setpoints_bar": [
+            15
+          ],
+          "min_pressure_bar": 15,
+          "max_pressure_bar": 15
+        }
+      ]
+    },
+    "hard_constraints": [
+      "Use only the declared cartridge and 15 bar regulator."
+    ],
+    "synthetic_fixture": true
+  },
+  "photochemical_oxidation": {
+    "protocol": "Synthetic software test only. Thioanisole and an organic photocatalyst in acetonitrile are illuminated at 435 nm and 29 C. Air is the reagent gas. No experimental result is supplied.",
+    "inventory": {
+      "schema_version": "flowpilot_lab_inventory_v3.0",
+      "strict_assignment": true,
+      "pumps": [
+        {
+          "equipment_id": "test_photo_pump",
+          "name": "Synthetic test_photo_pump",
+          "type": "syringe",
+          "min_flow_rate_mL_min": 0.02,
+          "max_flow_rate_mL_min": 3,
+          "max_pressure_bar": 25,
+          "compatible_materials": []
+        }
+      ],
+      "reactors": [
+        {
+          "equipment_id": "test_photo_coil",
+          "name": "Synthetic test_photo_coil",
+          "type": "coil",
+          "material": "PFA",
+          "volume_mL": 2.5,
+          "ID_mm": 0.9,
+          "min_temperature_C": 10,
+          "max_temperature_C": 140,
+          "max_pressure_bar": 25
+        }
+      ],
+      "tubing": [
+        {
+          "equipment_id": "synthetic_tube_0",
+          "material": "PFA",
+          "ID_mm": 0.9,
+          "max_pressure_bar": 25,
+          "max_temperature_C": 140,
+          "transparent": true
+        }
+      ],
+      "BPR_available": [
+        4
+      ],
+      "gas_hardware": [
+        {
+          "equipment_id": "test_air_mfc",
+          "name": "Synthetic air controller",
+          "type": "MFC",
+          "gas": "air",
+          "min_flow_sccm": 0.01,
+          "max_flow_sccm": 6,
+          "max_pressure_bar": 25
+        }
+      ],
+      "light_sources": [
+        {
+          "equipment_id": "test_photo_light",
+          "name": "Synthetic 435 nm light",
+          "wavelength_nm": 435,
+          "power_W": 6,
+          "intensity_mW_cm2": 75,
+          "quantity": 1,
+          "compatible_reactor": "coil"
+        }
+      ],
+      "mixers": [
+        {
+          "equipment_id": "synthetic_mixer_0",
+          "name": "Synthetic T junction",
+          "type": "T-mixer",
+          "material": "PFA",
+          "quantity": 1,
+          "max_inputs": 3,
+          "max_pressure_bar": 25
+        }
+      ],
+      "temperature_controllers": [
+        {
+          "equipment_id": "synthetic_thermal",
+          "name": "Synthetic thermal enclosure",
+          "type": "heater_chiller",
+          "quantity": 1,
+          "min_temperature_C": 10,
+          "max_temperature_C": 140
+        }
+      ],
+      "connectors": [
+        {
+          "equipment_id": "synthetic_connectors",
+          "name": "Synthetic unions",
+          "type": "union",
+          "quantity": 10,
+          "material": "PFA",
+          "max_pressure_bar": 25
+        }
+      ],
+      "collectors": [
+        {
+          "equipment_id": "synthetic_collector",
+          "name": "Synthetic cooled quench receiver",
+          "type": "quench collector",
+          "volume_mL": 80,
+          "max_pressure_bar": 1
+        }
+      ],
+      "separators": [
+        {
+          "equipment_id": "synthetic_separator",
+          "name": "Synthetic vented separator",
+          "type": "gas-liquid separator",
+          "supported_phases": [
+            "gas",
+            "liquid"
+          ],
+          "max_pressure_bar": 25,
+          "max_flow_mL_min": 8
+        }
+      ],
+      "standard_reactor_connectors_available": true,
+      "pressure_controllers": [
+        {
+          "equipment_id": "synthetic_bpr",
+          "name": "Synthetic fixed regulator",
+          "type": "BPR",
+          "setpoints_bar": [
+            4
+          ],
+          "min_pressure_bar": 4,
+          "max_pressure_bar": 4
+        }
+      ]
+    },
+    "hard_constraints": [
+      "Use liquid flow to calculate residence time."
+    ],
+    "synthetic_fixture": true
+  }
+}

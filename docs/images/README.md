@@ -14,4 +14,4 @@ No separate image license is granted by this file. The repository's [license rem
 
 Screenshot of the current React frontend, captured from its built interface on 16 October 2026 at `?demo=1`. The image is 1560 × 1080 pixels and is reproduced unchanged.
 
-The page visibly identifies itself as an illustrative demo with no model calls. Values and success labels belong to the interface fixture; they are not a live pipeline result, a laboratory record or evidence of experimental performance. The screenshot demonstrates navigation, result presentation and consistency-check reporting.
+The page visibly identifies itself as an illustrative demo with no model calls. Its A-to-C transformation, generic equipment and simple liquid-flow arithmetic were authored for the software demonstration. No measured yield, experimental history or previous council response is shown. The screenshot demonstrates navigation and result presentation; it is not a generated research proposal or laboratory record.

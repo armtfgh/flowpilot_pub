@@ -170,7 +170,7 @@ def test_intake_context_block_preserves_authority_labels():
     package = DesignInputPackage(
         raw_protocol="A to B.",
         objective="screen",
-        historical_data="Measured: 10% product at 35 min.",
+        historical_data="Synthetic feedback: 35% product at 12 min.",
         inventory_constraints={"BPR_available": [6]},
         hypotheses=["photon limitation"],
         operating_limits="max pressure 8 bar",
@@ -180,14 +180,14 @@ def test_intake_context_block_preserves_authority_labels():
     block = intake_context_block(package)
 
     assert "measured evidence > hard constraints > protocol facts" in block
-    assert "Measured: 10% product" in block
+    assert "Synthetic feedback: 35% product" in block
     assert "photon limitation" in block
 
 
 def test_intake_context_compacts_inventory_answer_without_losing_capabilities():
     equipment = {
-        "equipment_id": "KHU-REACTOR-10ML",
-        "name": "KHU 10 mL PFA coil",
+        "equipment_id": "EXAMPLE-REACTOR-10ML",
+        "name": "EXAMPLE 10 mL PFA coil",
         "volume_mL": 10,
         "ID_mm": 1.0,
         "max_pressure_bar": 8,
@@ -205,7 +205,7 @@ def test_intake_context_compacts_inventory_answer_without_losing_capabilities():
 
     block = intake_context_block(package)
 
-    assert "KHU-REACTOR-10ML" in block
+    assert "EXAMPLE-REACTOR-10ML" in block
     assert '"volume_mL": 10' in block
     assert len(block) < 5000
 

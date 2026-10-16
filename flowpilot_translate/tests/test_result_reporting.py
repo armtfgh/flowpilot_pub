@@ -180,9 +180,13 @@ def test_final_calculator_recomputes_each_stage_not_lumped_total(gas_solvent):
     assert proposal.model_dump() == before
 
 
-@pytest.mark.parametrize("run", ["20260907_111829_deterministic_replay", "20260907_105438_deterministic_replay"])
-def test_actual_saved_multistage_runs(run):
-    path = Path("outputs/gui_runs") / run / "result.json"
+@pytest.mark.parametrize("setting", ["FLOWPILOT_TEST_MULTISTAGE_RESULT_A", "FLOWPILOT_TEST_MULTISTAGE_RESULT_B"])
+def test_external_saved_multistage_runs(setting):
+    import os
+    external = os.environ.get(setting)
+    if not external:
+        pytest.skip("Optional external multistage result not configured")
+    path = Path(external)
     if not path.exists():
         pytest.skip("Local regression archive not installed")
     result = json.loads(path.read_text())

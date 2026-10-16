@@ -165,12 +165,12 @@ def test_strict_allocator_assigns_every_physical_operation():
 
 def test_component_family_uses_reactor_compatible_installations():
     inventory = _strict_inventory()
-    inventory.reactors[0].system = "KHU tubing reactor"
+    inventory.reactors[0].system = "EXAMPLE tubing reactor"
     inventory.reactors[0].compatible_systems = ["Manual"]
     proposal = _proposal(
         inventory_selection={
             "equipment_id": "reactor_10",
-            "system": "KHU tubing reactor",
+            "system": "EXAMPLE tubing reactor",
         }
     )
 

@@ -92,9 +92,13 @@ def test_active_air_exposure_is_recognized_after_an_inert_stage():
 
 def photo_case():
     from flowpilot_translate.schemas import BatchRecord, ChemistryPlan, LabInventory
-    data = json.loads((Path(__file__).parent / "fixtures/scientific_giese.json").read_text())
-    return (FlowProposal.model_validate(data["proposal"]), BatchRecord.model_validate(data["batch"]),
-            ChemistryPlan.model_validate(data["plan"]), LabInventory.model_validate(data["inventory"]))
+    from flowpilot_translate.scientific_evidence import source_context
+    data = json.loads((Path(__file__).parent / "fixtures/synthetic_photo_gas.json").read_text())
+    batch = BatchRecord.model_validate(data["batch"])
+    plan = ChemistryPlan.model_validate(data["plan"])
+    plan.scientific_context = {**source_context(batch, plan), **plan.scientific_context}
+    return (FlowProposal.model_validate(data["proposal"]), batch, plan,
+            LabInventory.model_validate(data["inventory"]))
 
 
 def test_twelve_photo_gas_screens_are_reproducible_and_closed():

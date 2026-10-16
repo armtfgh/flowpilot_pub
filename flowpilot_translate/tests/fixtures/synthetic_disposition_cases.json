@@ -1,0 +1,608 @@
+{
+  "synthetic_fixture": true,
+  "inventories": {
+    "thermal_feasible": {
+      "pumps": [
+        {
+          "equipment_id": "thermal_pump",
+          "name": "Synthetic thermal_pump",
+          "type": "syringe",
+          "min_flow_rate_mL_min": 0.02,
+          "max_flow_rate_mL_min": 3,
+          "max_pressure_bar": 25,
+          "compatible_materials": []
+        }
+      ],
+      "reactors": [
+        {
+          "equipment_id": "thermal_coil",
+          "name": "Synthetic thermal_coil",
+          "type": "coil",
+          "material": "PFA",
+          "volume_mL": 6,
+          "ID_mm": 0.9,
+          "min_temperature_C": 10,
+          "max_temperature_C": 140,
+          "max_pressure_bar": 25
+        }
+      ],
+      "tubing": [
+        {
+          "equipment_id": "synthetic_tube_0",
+          "material": "PFA",
+          "ID_mm": 0.9,
+          "max_pressure_bar": 25,
+          "max_temperature_C": 140,
+          "transparent": true
+        }
+      ],
+      "BPR_available": [
+        4
+      ],
+      "gas_hardware": [],
+      "light_sources": []
+    },
+    "thermal_infeasible_36c": {
+      "pumps": [
+        {
+          "equipment_id": "thermal_pump",
+          "name": "Synthetic thermal_pump",
+          "type": "syringe",
+          "min_flow_rate_mL_min": 0.02,
+          "max_flow_rate_mL_min": 3,
+          "max_pressure_bar": 25,
+          "compatible_materials": []
+        }
+      ],
+      "reactors": [
+        {
+          "equipment_id": "thermal_coil",
+          "name": "Synthetic thermal_coil",
+          "type": "coil",
+          "material": "PFA",
+          "volume_mL": 6,
+          "ID_mm": 0.9,
+          "min_temperature_C": 10,
+          "max_temperature_C": 36,
+          "max_pressure_bar": 25
+        }
+      ],
+      "tubing": [
+        {
+          "equipment_id": "synthetic_tube_0",
+          "material": "PFA",
+          "ID_mm": 0.9,
+          "max_pressure_bar": 25,
+          "max_temperature_C": 36,
+          "transparent": true
+        }
+      ],
+      "BPR_available": [
+        4
+      ],
+      "gas_hardware": [],
+      "light_sources": []
+    },
+    "photo_435_feasible": {
+      "pumps": [
+        {
+          "equipment_id": "optical_pump",
+          "name": "Synthetic optical_pump",
+          "type": "syringe",
+          "min_flow_rate_mL_min": 0.02,
+          "max_flow_rate_mL_min": 3,
+          "max_pressure_bar": 25,
+          "compatible_materials": []
+        }
+      ],
+      "reactors": [
+        {
+          "equipment_id": "optical_coil",
+          "name": "Synthetic optical_coil",
+          "type": "coil",
+          "material": "FEP",
+          "volume_mL": 6,
+          "ID_mm": 0.9,
+          "min_temperature_C": 10,
+          "max_temperature_C": 140,
+          "max_pressure_bar": 25
+        }
+      ],
+      "tubing": [
+        {
+          "equipment_id": "synthetic_tube_0",
+          "material": "FEP",
+          "ID_mm": 0.9,
+          "max_pressure_bar": 25,
+          "max_temperature_C": 140,
+          "transparent": true
+        }
+      ],
+      "BPR_available": [
+        4
+      ],
+      "gas_hardware": [
+        {
+          "equipment_id": "optical_air",
+          "name": "Synthetic air controller",
+          "type": "MFC",
+          "gas": "air",
+          "min_flow_sccm": 0.01,
+          "max_flow_sccm": 6,
+          "max_pressure_bar": 25
+        }
+      ],
+      "light_sources": [
+        {
+          "equipment_id": "optical_light",
+          "name": "Synthetic 435 nm light",
+          "wavelength_nm": 435,
+          "power_W": 6,
+          "intensity_mW_cm2": 75,
+          "quantity": 1,
+          "compatible_reactor": "coil"
+        }
+      ]
+    },
+    "photo_510_infeasible": {
+      "pumps": [
+        {
+          "equipment_id": "optical_pump",
+          "name": "Synthetic optical_pump",
+          "type": "syringe",
+          "min_flow_rate_mL_min": 0.02,
+          "max_flow_rate_mL_min": 3,
+          "max_pressure_bar": 25,
+          "compatible_materials": []
+        }
+      ],
+      "reactors": [
+        {
+          "equipment_id": "optical_coil",
+          "name": "Synthetic optical_coil",
+          "type": "coil",
+          "material": "FEP",
+          "volume_mL": 6,
+          "ID_mm": 0.9,
+          "min_temperature_C": 10,
+          "max_temperature_C": 140,
+          "max_pressure_bar": 25
+        }
+      ],
+      "tubing": [
+        {
+          "equipment_id": "synthetic_tube_0",
+          "material": "FEP",
+          "ID_mm": 0.9,
+          "max_pressure_bar": 25,
+          "max_temperature_C": 140,
+          "transparent": true
+        }
+      ],
+      "BPR_available": [
+        4
+      ],
+      "gas_hardware": [
+        {
+          "equipment_id": "optical_air",
+          "name": "Synthetic air controller",
+          "type": "MFC",
+          "gas": "air",
+          "min_flow_sccm": 0.01,
+          "max_flow_sccm": 6,
+          "max_pressure_bar": 25
+        }
+      ],
+      "light_sources": [
+        {
+          "equipment_id": "optical_light",
+          "name": "Synthetic 435 nm light",
+          "wavelength_nm": 510,
+          "power_W": 6,
+          "intensity_mW_cm2": 75,
+          "quantity": 1,
+          "compatible_reactor": "coil"
+        }
+      ]
+    },
+    "hydrogen_feasible": {
+      "pumps": [
+        {
+          "equipment_id": "hydrogen_pump",
+          "name": "Synthetic hydrogen_pump",
+          "type": "syringe",
+          "min_flow_rate_mL_min": 0.02,
+          "max_flow_rate_mL_min": 3,
+          "max_pressure_bar": 25,
+          "compatible_materials": []
+        }
+      ],
+      "reactors": [
+        {
+          "equipment_id": "hydrogen_bed",
+          "name": "Synthetic hydrogen_bed",
+          "type": "packed_bed",
+          "material": "stainless steel",
+          "volume_mL": 6,
+          "ID_mm": 0.9,
+          "min_temperature_C": 10,
+          "max_temperature_C": 140,
+          "max_pressure_bar": 25
+        }
+      ],
+      "tubing": [
+        {
+          "equipment_id": "synthetic_tube_0",
+          "material": "stainless steel",
+          "ID_mm": 0.9,
+          "max_pressure_bar": 25,
+          "max_temperature_C": 140,
+          "transparent": false
+        }
+      ],
+      "BPR_available": [
+        12
+      ],
+      "gas_hardware": [
+        {
+          "equipment_id": "hydrogen_mfc",
+          "name": "Synthetic H2 controller",
+          "type": "MFC",
+          "gas": "H2",
+          "min_flow_sccm": 0.01,
+          "max_flow_sccm": 6,
+          "max_pressure_bar": 25
+        }
+      ],
+      "light_sources": []
+    },
+    "hydrogen_unavailable": {
+      "pumps": [
+        {
+          "equipment_id": "hydrogen_pump",
+          "name": "Synthetic hydrogen_pump",
+          "type": "syringe",
+          "min_flow_rate_mL_min": 0.02,
+          "max_flow_rate_mL_min": 3,
+          "max_pressure_bar": 25,
+          "compatible_materials": []
+        }
+      ],
+      "reactors": [
+        {
+          "equipment_id": "hydrogen_bed",
+          "name": "Synthetic hydrogen_bed",
+          "type": "packed_bed",
+          "material": "stainless steel",
+          "volume_mL": 6,
+          "ID_mm": 0.9,
+          "min_temperature_C": 10,
+          "max_temperature_C": 140,
+          "max_pressure_bar": 25
+        }
+      ],
+      "tubing": [
+        {
+          "equipment_id": "synthetic_tube_0",
+          "material": "stainless steel",
+          "ID_mm": 0.9,
+          "max_pressure_bar": 25,
+          "max_temperature_C": 140,
+          "transparent": false
+        }
+      ],
+      "BPR_available": [
+        12
+      ],
+      "gas_hardware": [
+        {
+          "equipment_id": "hydrogen_mfc",
+          "name": "Synthetic H2 controller",
+          "type": "MFC",
+          "gas": "H2",
+          "min_flow_sccm": 0.01,
+          "max_flow_sccm": 6,
+          "max_pressure_bar": 25,
+          "service_status": "unavailable"
+        }
+      ],
+      "light_sources": []
+    },
+    "nitration_feasible": {
+      "pumps": [
+        {
+          "equipment_id": "acid_a",
+          "name": "Synthetic acid_a",
+          "type": "syringe",
+          "min_flow_rate_mL_min": 0.02,
+          "max_flow_rate_mL_min": 3,
+          "max_pressure_bar": 25,
+          "compatible_materials": []
+        },
+        {
+          "equipment_id": "acid_b",
+          "name": "Synthetic acid_b",
+          "type": "syringe",
+          "min_flow_rate_mL_min": 0.02,
+          "max_flow_rate_mL_min": 3,
+          "max_pressure_bar": 25,
+          "compatible_materials": []
+        }
+      ],
+      "reactors": [
+        {
+          "equipment_id": "acid_channel",
+          "name": "Synthetic acid_channel",
+          "type": "microcoil",
+          "material": "PTFE",
+          "volume_mL": 6,
+          "ID_mm": 0.7,
+          "min_temperature_C": 10,
+          "max_temperature_C": 140,
+          "max_pressure_bar": 25
+        }
+      ],
+      "tubing": [
+        {
+          "equipment_id": "synthetic_tube_0",
+          "material": "PTFE",
+          "ID_mm": 0.7,
+          "max_pressure_bar": 25,
+          "max_temperature_C": 140,
+          "transparent": true
+        }
+      ],
+      "BPR_available": [
+        4
+      ],
+      "gas_hardware": [],
+      "light_sources": []
+    },
+    "nitration_prohibited": {
+      "pumps": [
+        {
+          "equipment_id": "acid_a",
+          "name": "Synthetic acid_a",
+          "type": "syringe",
+          "min_flow_rate_mL_min": 0.02,
+          "max_flow_rate_mL_min": 3,
+          "max_pressure_bar": 25,
+          "compatible_materials": []
+        },
+        {
+          "equipment_id": "acid_b",
+          "name": "Synthetic acid_b",
+          "type": "syringe",
+          "min_flow_rate_mL_min": 0.02,
+          "max_flow_rate_mL_min": 3,
+          "max_pressure_bar": 25,
+          "compatible_materials": []
+        }
+      ],
+      "reactors": [
+        {
+          "equipment_id": "acid_channel",
+          "name": "Synthetic acid_channel",
+          "type": "microcoil",
+          "material": "PTFE",
+          "volume_mL": 6,
+          "ID_mm": 0.7,
+          "min_temperature_C": 10,
+          "max_temperature_C": 140,
+          "max_pressure_bar": 25,
+          "notes": "Nitric acid nitration prohibited by the synthetic capability flag."
+        }
+      ],
+      "tubing": [
+        {
+          "equipment_id": "synthetic_tube_0",
+          "material": "PTFE",
+          "ID_mm": 0.7,
+          "max_pressure_bar": 25,
+          "max_temperature_C": 140,
+          "transparent": true
+        }
+      ],
+      "BPR_available": [
+        4
+      ],
+      "gas_hardware": [],
+      "light_sources": []
+    },
+    "multistep_feasible": {
+      "pumps": [
+        {
+          "equipment_id": "stage_a",
+          "name": "Synthetic stage_a",
+          "type": "syringe",
+          "min_flow_rate_mL_min": 0.02,
+          "max_flow_rate_mL_min": 3,
+          "max_pressure_bar": 25,
+          "compatible_materials": []
+        },
+        {
+          "equipment_id": "stage_b",
+          "name": "Synthetic stage_b",
+          "type": "syringe",
+          "min_flow_rate_mL_min": 0.02,
+          "max_flow_rate_mL_min": 3,
+          "max_pressure_bar": 25,
+          "compatible_materials": []
+        },
+        {
+          "equipment_id": "stage_c",
+          "name": "Synthetic stage_c",
+          "type": "syringe",
+          "min_flow_rate_mL_min": 0.02,
+          "max_flow_rate_mL_min": 3,
+          "max_pressure_bar": 25,
+          "compatible_materials": []
+        }
+      ],
+      "reactors": [
+        {
+          "equipment_id": "stage_train",
+          "name": "Synthetic stage_train",
+          "type": "two_stage_coil_train",
+          "material": "PFA",
+          "volume_mL": 18,
+          "ID_mm": 0.9,
+          "min_temperature_C": 10,
+          "max_temperature_C": 140,
+          "max_pressure_bar": 25,
+          "configuration": "serial",
+          "component_volumes_mL": [
+            6,
+            12
+          ]
+        }
+      ],
+      "tubing": [
+        {
+          "equipment_id": "synthetic_tube_0",
+          "material": "PFA",
+          "ID_mm": 0.9,
+          "max_pressure_bar": 25,
+          "max_temperature_C": 140,
+          "transparent": true
+        }
+      ],
+      "BPR_available": [
+        4
+      ],
+      "gas_hardware": [],
+      "light_sources": []
+    },
+    "multistep_infeasible": {
+      "pumps": [
+        {
+          "equipment_id": "stage_a",
+          "name": "Synthetic stage_a",
+          "type": "syringe",
+          "min_flow_rate_mL_min": 0.02,
+          "max_flow_rate_mL_min": 3,
+          "max_pressure_bar": 25,
+          "compatible_materials": []
+        }
+      ],
+      "reactors": [
+        {
+          "equipment_id": "single_stage_coil",
+          "name": "Synthetic single_stage_coil",
+          "type": "single_coil",
+          "material": "PFA",
+          "volume_mL": 6,
+          "ID_mm": 0.9,
+          "min_temperature_C": 10,
+          "max_temperature_C": 140,
+          "max_pressure_bar": 25
+        }
+      ],
+      "tubing": [
+        {
+          "equipment_id": "synthetic_tube_0",
+          "material": "PFA",
+          "ID_mm": 0.9,
+          "max_pressure_bar": 25,
+          "max_temperature_C": 140,
+          "transparent": true
+        }
+      ],
+      "BPR_available": [
+        4
+      ],
+      "gas_hardware": [],
+      "light_sources": []
+    }
+  },
+  "cases": [
+    {
+      "case_id": "thermal_available",
+      "protocol": "Synthetic software capability test: thermal operation; no experimental outcomes.",
+      "objective": "Evaluate declared capabilities only.",
+      "hard_constraints": {
+        "required_temperature_C": 52
+      },
+      "inventory_id": "thermal_feasible"
+    },
+    {
+      "case_id": "thermal_unavailable",
+      "protocol": "Synthetic software capability test: thermal operation; no experimental outcomes.",
+      "objective": "Evaluate declared capabilities only.",
+      "hard_constraints": {
+        "required_temperature_C": 52
+      },
+      "inventory_id": "thermal_infeasible_36c"
+    },
+    {
+      "case_id": "optical_available",
+      "protocol": "Synthetic software capability test: optical operation; no experimental outcomes.",
+      "objective": "Evaluate declared capabilities only.",
+      "hard_constraints": {
+        "wavelength_range_nm": [
+          430,
+          440
+        ]
+      },
+      "inventory_id": "photo_435_feasible"
+    },
+    {
+      "case_id": "optical_unavailable",
+      "protocol": "Synthetic software capability test: optical operation; no experimental outcomes.",
+      "objective": "Evaluate declared capabilities only.",
+      "hard_constraints": {
+        "wavelength_range_nm": [
+          430,
+          440
+        ]
+      },
+      "inventory_id": "photo_510_infeasible"
+    },
+    {
+      "case_id": "hydrogen_available",
+      "protocol": "Synthetic software capability test: hydrogen operation; no experimental outcomes.",
+      "objective": "Evaluate declared capabilities only.",
+      "hard_constraints": [
+        "Hydrogen is required and cannot be substituted."
+      ],
+      "inventory_id": "hydrogen_feasible"
+    },
+    {
+      "case_id": "hydrogen_unavailable",
+      "protocol": "Synthetic software capability test: hydrogen operation; no experimental outcomes.",
+      "objective": "Evaluate declared capabilities only.",
+      "hard_constraints": [
+        "Hydrogen is required and cannot be substituted."
+      ],
+      "inventory_id": "hydrogen_unavailable"
+    },
+    {
+      "case_id": "acid_available",
+      "protocol": "Synthetic software capability test: acid operation; no experimental outcomes.",
+      "objective": "Evaluate declared capabilities only.",
+      "hard_constraints": [],
+      "inventory_id": "nitration_feasible"
+    },
+    {
+      "case_id": "acid_unavailable",
+      "protocol": "Synthetic software capability test: acid operation; no experimental outcomes.",
+      "objective": "Evaluate declared capabilities only.",
+      "hard_constraints": [],
+      "inventory_id": "nitration_prohibited"
+    },
+    {
+      "case_id": "multistage_available",
+      "protocol": "Synthetic software capability test: multistage operation; no experimental outcomes.",
+      "objective": "Evaluate declared capabilities only.",
+      "hard_constraints": [],
+      "inventory_id": "multistep_feasible"
+    },
+    {
+      "case_id": "multistage_unavailable",
+      "protocol": "Synthetic software capability test: multistage operation; no experimental outcomes.",
+      "objective": "Evaluate declared capabilities only.",
+      "hard_constraints": [],
+      "inventory_id": "multistep_infeasible"
+    }
+  ]
+}

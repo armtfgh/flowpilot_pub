@@ -1,6 +1,5 @@
 include README.md pyproject.toml .env.example app.py
 include CITATION.cff CONTRIBUTING.md .gitignore .gitattributes
-include flowpilot_translate/data/lab_inventory_thq.json
 include flowpilot_webapp/run_dev.sh flowpilot_webapp/build_windows.ps1 flowpilot_webapp/FlowPilot.spec
 include flowpilot_webapp/frontend/package.json flowpilot_webapp/frontend/package-lock.json
 include flowpilot_webapp/frontend/tsconfig.json flowpilot_webapp/frontend/vite.config.ts
@@ -8,7 +7,7 @@ include flowpilot_webapp/frontend/playwright.config.ts flowpilot_webapp/frontend
 recursive-include flowpilot_webapp/frontend/src *.ts *.tsx *.css
 recursive-include flowpilot_webapp/frontend/tests *.ts
 recursive-include flowpilot/tests *.py
-recursive-include flowpilot_translate/tests *.py *.json
+recursive-include flowpilot_translate/tests *.py *.json *.md
 recursive-include flowpilot_design/tests *.py *.json
 recursive-include flowpilot_webapp/tests *.py *.json
 recursive-include tests *.py *.json

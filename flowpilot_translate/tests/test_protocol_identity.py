@@ -1,4 +1,4 @@
-"""Identity authority must come from the supplied chemistry, not its equipment."""
+"""Identity recognition on fictional protocol sentences; percentages are invented."""
 from copy import deepcopy
 import hashlib
 
@@ -13,16 +13,16 @@ from flowpilot_translate.tests.test_executable_artifact_contract import _hydroge
 H2 = (
     'N-Diphenylmethylazetidin-3-ol was dissolved in methanol. '
     'The solution was contacted with hydrogen over Pd(OH)2/Al2O3 at 60 C. '
-    'Conversion to 3-azetidinol was 38.1%.'
+    'Conversion to 3-azetidinol was 20%.'
 )
 PHOTO = (
     'Fmoc-L-methionine and a photocatalyst were dissolved in acetonitrile. '
     'The solution was exposed to air and irradiated. '
-    'Fmoc-methionine sulfoxide was formed in 99% yield.'
+    'Fmoc-methionine sulfoxide was formed in 30% yield.'
 )
 CLICK = (
     'Benzyl azide and phenylacetylene were combined with Cu/C catalyst in acetone. '
-    'The corresponding 1,4-disubstituted 1,2,3-triazole was isolated in 94% yield.'
+    'The corresponding 1,4-disubstituted 1,2,3-triazole was isolated in 40% yield.'
 )
 
 
@@ -63,8 +63,8 @@ def test_rules_generalize_to_other_substrates_and_outcome_phrasings(protocol, fa
 
 @pytest.mark.parametrize('protocol', [
     H2.replace('3-azetidinol', '3-piperidinol'),
-    H2.replace('was 38.1%', 'was not observed'),
-    H2.replace('Conversion to 3-azetidinol was 38.1%.', '3-azetidinol might be produced.'),
+    H2.replace('was 20%', 'was not observed'),
+    H2.replace('Conversion to 3-azetidinol was 20%.', '3-azetidinol might be produced.'),
     H2.replace('N-Diphenylmethylazetidin-3-ol', 'styrene'),
     PHOTO.replace('was formed', 'was not formed'),
     PHOTO.replace('was formed', 'might be formed'),

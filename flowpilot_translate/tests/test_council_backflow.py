@@ -1,5 +1,6 @@
 from copy import deepcopy
 import json
+from math import ceil
 
 import pytest
 
@@ -78,7 +79,7 @@ def air_case():
             feed.contents = ["air"]
             feed.gas_reagent_mole_fraction = 0.21
     inv.gas_hardware[0].gas = "O2, Air"
-    # Synthetic wide-range fixture; real KHU hardware is not modified.
+    # Synthetic wide-range controller for air-to-oxygen substitution tests.
     inv.gas_hardware[0].min_flow_sccm = 0.001
     pool, _ = build_screen_pool(p, b, plan, inv)
     return pool, b, plan, inv
@@ -132,9 +133,23 @@ def test_council_can_retain_air_no_forced_oxygen(air_case):
 
 def test_unachievable_oxygen_mfc_flow_does_not_silently_increase_equivalents(air_case):
     pool, batch, plan, inv = deepcopy(air_case)
-    inv.gas_hardware[0].min_flow_sccm = 0.01
+    required_oxygen_flows = [
+        stream["gas_flow_sccm"] * stream["gas_reagent_mole_fraction"]
+        for candidate in pool
+        for stream in candidate["proposal"]["streams"]
+        if stream["phase"] == "gas"
+    ]
+    # An invented controller range above every required oxygen setpoint must
+    # fail without changing delivered equivalents to accommodate its minimum.
+    controller = inv.gas_hardware[0]
+    controller.min_flow_sccm = ceil(2 * max(required_oxygen_flows) * 1000) / 1000
+    controller.max_flow_sccm = 2 * controller.min_flow_sccm
+    original_pool = deepcopy(pool)
+    original_plan = plan.model_dump()
     with pytest.raises(ValueError, match="preserve stage and delivered oxygen"):
         revised_oxygen_pool(pool, batch, plan, inv)
+    assert pool == original_pool
+    assert plan.model_dump() == original_plan
 
 
 def test_invalid_council_action_is_not_applied(air_case):

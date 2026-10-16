@@ -146,60 +146,55 @@ def test_liquid_oxidant_does_not_invent_an_air_feed():
 
 
 def test_o2_mfc_is_recomputed_from_target_equivalents_not_llm_stream_guess():
+    # Invented coordinates exercise the gas-law calculation, not a measured run.
     batch = BatchRecord(
-        reaction_description="THQ aerobic oxidation with O2 (2.0 equiv) in DMSO.",
-        solvent="DMSO",
-        temperature_C=40,
-        reaction_time_h=15,
-        concentration_M=0.5,
+        reaction_description="Synthetic oxidation of test solute with O2 (2.0 equiv) in water.",
+        solvent="water",
+        temperature_C=30,
+        reaction_time_h=2,
+        concentration_M=0.2,
         atmosphere="O2",
     )
     plan = ChemistryPlan(
-        reaction_class="photochemical aerobic oxidation",
-        mechanism_type="O2-mediated photochemical oxidation",
+        reaction_class="photochemical oxidation",
         o2_is_reagent=True,
         stream_logic=[
-            StreamLogic(stream_label="A", reagents=["THQ"], concentration_M=0.5, phase="liquid"),
+            StreamLogic(stream_label="A", reagents=["test solute"], concentration_M=0.2, phase="liquid"),
             StreamLogic(stream_label="G", reagents=["O2"], phase="gas", molar_equiv=2.0),
         ],
     )
     proposal = FlowProposal(
-        residence_time_min=68.6,
+        residence_time_min=20,
         residence_time_basis="inlet/STP apparent residence time",
-        flow_rate_mL_min=0.06,
-        concentration_M=0.5,
-        temperature_C=40,
-        BPR_bar=6.0,
-        tubing_ID_mm=1.0,
+        flow_rate_mL_min=0.05,
+        concentration_M=0.2,
+        temperature_C=30,
+        BPR_bar=4,
+        tubing_ID_mm=0.8,
         streams=[
             StreamAssignment(
-                stream_label="A",
-                pump_role="substrate solution",
-                contents=["THQ"],
-                solvent="DMSO",
-                concentration_M=0.5,
-                flow_rate_mL_min=0.06,
+                stream_label="A", contents=["test solute"], solvent="water",
+                concentration_M=0.2, flow_rate_mL_min=0.05,
             ),
             StreamAssignment(
-                stream_label="G",
-                pump_role="O2 gas feed",
-                contents=["O2"],
-                phase="gas",
-                gas_flow_sccm=0.04,
-                gas_flow_actual_mL_min=0.04,
-                flow_rate_mL_min=0.04,
+                stream_label="G", contents=["O2"], phase="gas",
+                gas_flow_sccm=0.01, gas_flow_actual_mL_min=0.01,
+                flow_rate_mL_min=0.01,
             ),
         ],
     )
 
     calc = DesignCalculator().run(batch, chemistry_plan=plan, proposal=proposal)
     proposal = DesignCalculator.annotate_proposal_with_calculations(proposal, calc)
+    # Q_liquid * concentration * equivalents * STP molar volume (mL/mmol).
+    expected_stp = 0.05 * 0.2 * 2 * 22.414
+    expected_actual = expected_stp * (303.15 / 273.15) * (1.01325 / 5.01325)
 
     assert calc.gas_flow_recomputed_from_equiv
-    assert abs(calc.gas_flow_sccm - 1.344) < 0.02
+    assert abs(calc.gas_flow_sccm - expected_stp) < 0.002
     assert abs(calc.o2_equiv_supplied - 2.0) < 0.02
-    assert calc.gas_flow_actual_mL_min > 0.2
-    assert proposal.streams[1].gas_flow_sccm > 1.3
+    assert abs(calc.gas_flow_actual_mL_min - expected_actual) < 0.002
+    assert abs(proposal.streams[1].gas_flow_sccm - expected_stp) < 0.002
     assert proposal.streams[1].molar_equiv == 2.0
 
 

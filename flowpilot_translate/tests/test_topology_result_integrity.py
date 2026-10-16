@@ -26,7 +26,7 @@ def test_storing_topology_never_replaces_validated_proposal_volume():
             UnitOperation(
                 op_id="reactor_1",
                 op_type="coil_reactor",
-                label="KHU PFA coil 10 mL",
+                label="EXAMPLE PFA coil 10 mL",
                 parameters={"volume_mL": 10.0, "residence_time_min": 20.0},
             )
         ],

@@ -25,18 +25,18 @@ async function expectNoPageOverflow(page: import("@playwright/test").Page) {
 test("populated design uses one canonical result across tabs", async ({ page }, testInfo) => {
   await page.goto("/?demo=1");
   await expect(page.getByRole("heading", { name: "Design studio" })).toBeVisible();
-  await expect(page.getByText("Executable screening design")).toBeVisible();
-  await expect(page.getByText("0.504796 min", { exact: true })).toBeVisible();
+  await expect(page.getByText("Synthetic interface example")).toBeVisible();
+  await expect(page.getByText("10 min", { exact: true })).toBeVisible();
 
   await page.getByRole("button", { name: "Process", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Executable process topology" })).toBeVisible();
-  await expect(page.locator(".processNode")).toHaveCount(7);
-  await expect(page.getByText("rx_1", { exact: true }).first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Illustrative process topology" })).toBeVisible();
+  await expect(page.locator(".processNode")).toHaveCount(3);
+  await expect(page.getByText("example_coil", { exact: true }).first()).toBeVisible();
 
   await page.getByRole("button", { name: "Engineering" }).click();
-  await expect(page.locator(".finalEngineering").getByText("0.504796", { exact: true })).toBeVisible();
+  await expect(page.locator(".finalEngineering").getByText("10", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Process summary", exact: true }).click();
-  await expect(page.getByText("substrate; photocatalyst in MeCN", { exact: true })).toBeVisible();
+  await expect(page.getByText("Compound A; reagent B", { exact: true })).toBeVisible();
   await expectNoPageOverflow(page);
 
   await page.screenshot({
@@ -47,7 +47,7 @@ test("populated design uses one canonical result across tabs", async ({ page }, 
 
 
 test("inventory workspace and mobile navigation remain usable", async ({ page }, testInfo) => {
-  await page.goto("/?demo=1");
+  await page.goto("/");
   const isMobile = testInfo.project.name === "mobile";
   if (isMobile) {
     await page.getByRole("button", { name: "Menu" }).click();

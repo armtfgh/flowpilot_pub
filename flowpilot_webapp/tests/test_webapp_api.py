@@ -248,7 +248,7 @@ def test_design_job_rejects_an_unconfigured_model_before_submission(monkeypatch)
 
 
 def test_saved_run_can_be_reopened_with_its_topology(tmp_path, monkeypatch) -> None:
-    run_id = "20260831_120000_webapp"
+    run_id = "synthetic_saved_run"
     directory = tmp_path / "outputs" / "gui_runs" / run_id
     directory.mkdir(parents=True)
     (directory / "result.json").write_text(

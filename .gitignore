@@ -92,7 +92,6 @@ test-results/
 # Generated knowledge stores are not part of the public source.
 /flowpilot_translate/data/*
 !/flowpilot_translate/data/lab_inventory.json
-!/flowpilot_translate/data/lab_inventory_thq.json
 /flowpilot_fundamentals/data/*
 /flowpilot_prism/data/*
 /flowpilot_scout/data/*
